@@ -1,0 +1,13 @@
+' Indexes of ConcessionAssessement database
+' Created by JJ-Carron
+' 3.08.2022
+' File structure:
+' name = definition;
+' after a ' each character on the line is ignored
+' the name is the last word previous the =
+' The definition include all the word between the the = and the ; with the exception of the  text after the ' on each line
+The must be compatible with the table definitions
+
+CasinoIdx =
+CREATE INDEX CasinoIdx ON Casinos(Name); ' (Just as example) put the complete command for more flexibility
+

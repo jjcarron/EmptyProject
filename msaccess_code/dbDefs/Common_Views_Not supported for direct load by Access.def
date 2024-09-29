@@ -1,0 +1,324 @@
+'Definitions of the Queries of the DB-ConcessionAssessment.accdb database.
+
+' Created by JJ-Carron with DTT_DB_Utilities
+' 04.09.2022
+
+' File structure:
+' name = definition;   
+
+' after a ' each character on the line is ignored      
+' the name is the last word before the =
+' The definition include all the word between the the = and the ; with the exception of the  text after the ' on each line
+
+' Warning 
+' - Only ASCII Character are supported
+' - Doesn't support spaces in the query names supported
+
+vew_Users = 
+SELECT tbl_Users.id AS USER_ID, tbl_Users.Username AS USERNAME, tbl_Users.Name AS USER_NAME, tbl_Users.First_Name AS USER_FIRSTNAME, tbl_Users.Passwd AS USER_PASSWORD, tbl_Users.isAdmin AS USER_ADMIN, tbl_Users.isLocked AS USER_LOCKED, tbl_Users.PrefLanguage AS USER_LANG
+FROM tbl_Users;
+
+
+crw_GGR = 
+TRANSFORM Sum(tbl_Casino_Period_Criterion_Values.Val) AS TotalVal
+SELECT tbl_Casinos.Name
+FROM (tbl_Casino_Period_Criterion_Values INNER JOIN tbl_Casinos ON tbl_Casino_Period_Criterion_Values.Casino_fk = tbl_Casinos.id) INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+WHERE tbl_Criteria.Reference = 'LB_99.1'
+GROUP BY tbl_Casinos.Name
+PIVOT tbl_Casino_Period_Criterion_Values.Year;
+
+_crw_Bans_Pro_10Mio_GGR = 
+TRANSFORM Int(First(IIf([Val_LB_99_1] <> 0, [Val_LB_4_2] / [Val_LB_99_1] * 1E7, 0))) AS Ratio
+SELECT tbl_Casinos.Name
+FROM (SELECT 
+         A.Casino_fk, 
+         A.Year, 
+         A.Val AS Val_LB_4_2, 
+         B.Val AS Val_LB_99_1
+     FROM 
+         (SELECT 
+              tbl_Casino_Period_Criterion_Values.Casino_fk, 
+              tbl_Casino_Period_Criterion_Values.Year, 
+              tbl_Casino_Period_Criterion_Values.Val
+          FROM 
+              tbl_Casino_Period_Criterion_Values
+          INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+          WHERE 
+              tbl_Criteria.Reference = 'LB_4.2') AS A
+     INNER JOIN 
+         (SELECT 
+              tbl_Casino_Period_Criterion_Values.Casino_fk, 
+              tbl_Casino_Period_Criterion_Values.Year, 
+              tbl_Casino_Period_Criterion_Values.Val
+          FROM 
+              tbl_Casino_Period_Criterion_Values
+          INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+          WHERE 
+              tbl_Criteria.Reference = 'LB_99.1') AS B
+     ON A.Casino_fk = B.Casino_fk AND A.Year = B.Year)  AS C INNER JOIN tbl_Casinos ON C.Casino_fk = tbl_Casinos.id
+GROUP BY tbl_Casinos.Name
+PIVOT C.Year;
+
+crw_EarlyDetectionProcesses_Pro_10Mio_GGR = 
+TRANSFORM Int(First(IIf([Val_LB_99_1] <> 0, [Val_LB_3_1] / [Val_LB_99_1] * 1E7, 0))) AS Ratio
+SELECT tbl_Casinos.Name
+FROM (SELECT 
+         A.Casino_fk, 
+         A.Year, 
+         A.Val AS Val_LB_3_1, 
+         B.Val AS Val_LB_99_1
+     FROM 
+         (SELECT 
+              tbl_Casino_Period_Criterion_Values.Casino_fk, 
+              tbl_Casino_Period_Criterion_Values.Year, 
+              tbl_Casino_Period_Criterion_Values.Val
+          FROM 
+              tbl_Casino_Period_Criterion_Values
+          INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+          WHERE 
+              tbl_Criteria.Reference = 'LB_3.1') AS A
+     INNER JOIN 
+         (SELECT 
+              tbl_Casino_Period_Criterion_Values.Casino_fk, 
+              tbl_Casino_Period_Criterion_Values.Year, 
+              tbl_Casino_Period_Criterion_Values.Val
+          FROM 
+              tbl_Casino_Period_Criterion_Values
+          INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+          WHERE 
+              tbl_Criteria.Reference = 'LB_99.1') AS B
+     ON A.Casino_fk = B.Casino_fk AND A.Year = B.Year)  AS C INNER JOIN tbl_Casinos ON C.Casino_fk = tbl_Casinos.id
+GROUP BY tbl_Casinos.Name
+PIVOT C.Year;
+
+crw_Bans_Pro_100K_Entries = 
+TRANSFORM Int(First(IIf([Val_LB_2_1] <> 0, [Val_LB_4_2] / [Val_LB_2_1] * 1E5, 0))) AS Ratio
+SELECT tbl_Casinos.Name
+FROM (SELECT 
+         A.Casino_fk, 
+         A.Year, 
+         A.Val AS Val_LB_4_2, 
+         B.Val AS Val_LB_2_1
+     FROM 
+         (SELECT 
+              tbl_Casino_Period_Criterion_Values.Casino_fk, 
+              tbl_Casino_Period_Criterion_Values.Year, 
+              tbl_Casino_Period_Criterion_Values.Val
+          FROM 
+              tbl_Casino_Period_Criterion_Values
+          INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+          WHERE 
+              tbl_Criteria.Reference = 'LB_4.2') AS A
+     INNER JOIN 
+         (SELECT 
+              tbl_Casino_Period_Criterion_Values.Casino_fk, 
+              tbl_Casino_Period_Criterion_Values.Year, 
+              tbl_Casino_Period_Criterion_Values.Val
+          FROM 
+              tbl_Casino_Period_Criterion_Values
+          INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+          WHERE 
+              tbl_Criteria.Reference = 'LB_2.1') AS B
+     ON A.Casino_fk = B.Casino_fk AND A.Year = B.Year)  AS C INNER JOIN tbl_Casinos ON C.Casino_fk = tbl_Casinos.id
+GROUP BY tbl_Casinos.Name
+PIVOT C.Year;
+
+crw_Early_Detection_Processes_Pro_100K_Entries =
+TRANSFORM Int(First(IIf([Val_LB_2_1] <> 0, [Val_LB_3_1] / [Val_LB_2_1] * 1E5, 0))) AS Ratio
+SELECT tbl_Casinos.Name
+FROM (SELECT 
+         A.Casino_fk, 
+         A.Year, 
+         A.Val AS Val_LB_3_1, 
+         B.Val AS Val_LB_2_1
+     FROM 
+         (SELECT 
+              tbl_Casino_Period_Criterion_Values.Casino_fk, 
+              tbl_Casino_Period_Criterion_Values.Year, 
+              tbl_Casino_Period_Criterion_Values.Val
+          FROM 
+              tbl_Casino_Period_Criterion_Values
+          INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+          WHERE 
+              tbl_Criteria.Reference = 'LB_3.1') AS A
+     INNER JOIN 
+         (SELECT 
+              tbl_Casino_Period_Criterion_Values.Casino_fk, 
+              tbl_Casino_Period_Criterion_Values.Year, 
+              tbl_Casino_Period_Criterion_Values.Val
+          FROM 
+              tbl_Casino_Period_Criterion_Values
+          INNER JOIN tbl_Criteria ON tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+          WHERE 
+              tbl_Criteria.Reference = 'LB_2.1') AS B
+     ON A.Casino_fk = B.Casino_fk AND A.Year = B.Year)  AS C INNER JOIN tbl_Casinos ON C.Casino_fk = tbl_Casinos.id
+GROUP BY tbl_Casinos.Name
+PIVOT C.Year;
+
+crw_OL_Bans_Pro_10Mio_GGR=
+TRANSFORM Int(First(IIf([Val_OL_99_1]<>0,[Val_OL_4_2]/[Val_OL_99_1]*10000000,0))) AS Ratio
+SELECT
+        tbl_Casinos.Name
+FROM
+        (
+                SELECT
+                        A.Casino_fk        ,
+                        A.Year             ,
+                        A.Val AS Val_OL_4_2,
+                        B.Val AS Val_OL_99_1
+                FROM
+                        (
+                                SELECT
+                                        tbl_Casino_Period_Criterion_Values.Casino_fk,
+                                        tbl_Casino_Period_Criterion_Values.Year     ,
+                                        tbl_Casino_Period_Criterion_Values.Val
+                                FROM
+                                        tbl_Casino_Period_Criterion_Values
+                                INNER JOIN
+                                        tbl_Criteria
+                                ON
+                                        tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+                                WHERE
+                                        tbl_Criteria.Reference = 'OL_4.2') AS A
+                INNER JOIN
+                        (
+                                SELECT
+                                        tbl_Casino_Period_Criterion_Values.Casino_fk,
+                                        tbl_Casino_Period_Criterion_Values.Year     ,
+                                        tbl_Casino_Period_Criterion_Values.Val
+                                FROM
+                                        tbl_Casino_Period_Criterion_Values
+                                INNER JOIN
+                                        tbl_Criteria
+                                ON
+                                        tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+                                WHERE
+                                        tbl_Criteria.Reference = 'OL_99.1') AS B
+                ON
+                        (
+                                A.Casino_fk = B.Casino_fk)
+                AND     (
+                                A.Year = B.Year)) AS C
+INNER JOIN
+        tbl_Casinos
+ON
+        C.Casino_fk = tbl_Casinos.id
+GROUP BY
+        tbl_Casinos.Name PIVOT C.Year;
+
+crw_OL_Bans_Pro_10K_Accounts =
+TRANSFORM Int(First(IIf([Val_OL_2_1_2]<>0,[Val_OL_4_2]/[Val_OL_2_1_2]*10000,0))) AS Ratio
+SELECT
+        tbl_Casinos.Name
+FROM
+        (
+                SELECT
+                        A.Casino_fk        ,
+                        A.Year             ,
+                        A.Val AS Val_OL_4_2,
+                        B.Val AS Val_OL_2_1_2
+                FROM
+                        (
+                                SELECT
+                                        tbl_Casino_Period_Criterion_Values.Casino_fk,
+                                        tbl_Casino_Period_Criterion_Values.Year     ,
+                                        tbl_Casino_Period_Criterion_Values.Val
+                                FROM
+                                        tbl_Casino_Period_Criterion_Values
+                                INNER JOIN
+                                        tbl_Criteria
+                                ON
+                                        tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+                                WHERE
+                                        tbl_Criteria.Reference = 'OL_4.2') AS A
+                INNER JOIN
+                        (
+                                SELECT
+                                        tbl_Casino_Period_Criterion_Values.Casino_fk,
+                                        tbl_Casino_Period_Criterion_Values.Year     ,
+                                        tbl_Casino_Period_Criterion_Values.Val
+                                FROM
+                                        tbl_Casino_Period_Criterion_Values
+                                INNER JOIN
+                                        tbl_Criteria
+                                ON
+                                        tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+                                WHERE
+                                        tbl_Criteria.Reference = 'OL_2.1.2') AS B
+                ON
+                        (
+                                A.Year = B.Year)
+                AND     (
+                                A.Casino_fk = B.Casino_fk)) AS C
+INNER JOIN
+        tbl_Casinos
+ON
+        C.Casino_fk = tbl_Casinos.id
+GROUP BY
+        tbl_Casinos.Name PIVOT C.Year;
+
+crw_OL_EarlyDetectionProcesses =
+TRANSFORM Sum(tbl_Casino_Period_Criterion_Values.Val) AS TotalVal
+SELECT
+        tbl_Casinos.Name
+FROM
+        (tbl_Casino_Period_Criterion_Values INNER JOIN tbl_Casinos ON tbl_Casino_Period_Criterion_Values.Casino_fk = tbl_Casinos.id)
+INNER JOIN
+        tbl_Criteria
+ON
+        tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+WHERE
+        tbl_Criteria.Reference = 'OL_3.1'
+GROUP BY
+        tbl_Casinos.Name PIVOT tbl_Casino_Period_Criterion_Values.Year;
+
+crw_LB_EarlyDetectionProcesses_Pro_10Mio_GGR=
+TRANSFORM Int(First(IIf([Val_OL_99_1]<>0,[Val_OL_3_1]/[Val_OL_99_1]*10000000,0))) AS Ratio
+SELECT
+        tbl_Casinos.Name
+FROM
+        (
+                SELECT
+                        A.Casino_fk        ,
+                        A.Year             ,
+                        A.Val AS Val_OL_3_1,
+                        B.Val AS Val_OL_99_1
+                FROM
+                        (
+                                SELECT
+                                        tbl_Casino_Period_Criterion_Values.Casino_fk,
+                                        tbl_Casino_Period_Criterion_Values.Year     ,
+                                        tbl_Casino_Period_Criterion_Values.Val
+                                FROM
+                                        tbl_Casino_Period_Criterion_Values
+                                INNER JOIN
+                                        tbl_Criteria
+                                ON
+                                        tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+                                WHERE
+                                        tbl_Criteria.Reference = 'OL_3.1') AS A
+                INNER JOIN
+                        (
+                                SELECT
+                                        tbl_Casino_Period_Criterion_Values.Casino_fk,
+                                        tbl_Casino_Period_Criterion_Values.Year     ,
+                                        tbl_Casino_Period_Criterion_Values.Val
+                                FROM
+                                        tbl_Casino_Period_Criterion_Values
+                                INNER JOIN
+                                        tbl_Criteria
+                                ON
+                                        tbl_Casino_Period_Criterion_Values.Criterion_fk = tbl_Criteria.id
+                                WHERE
+                                        tbl_Criteria.Reference = 'OL_99.1') AS B
+                ON
+                        (
+                                A.Year = B.Year)
+                AND     (
+                                A.Casino_fk = B.Casino_fk)) AS C
+INNER JOIN
+        tbl_Casinos
+ON
+        C.Casino_fk = tbl_Casinos.id
+GROUP BY
+        tbl_Casinos.Name PIVOT C.Year;

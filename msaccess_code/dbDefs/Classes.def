@@ -1,0 +1,19 @@
+'Definitions of the Classes for code generation 
+
+' Created by JJ-Carron with DTT_DB_Utilities
+' 04.09.2022
+
+' File structure:
+' name = ClassName;   
+
+' after a ' each character on the line is ignored      
+' the name is the last word before the =
+' The definition include all the word between the the = and the ; with the exception of the  text after the ' on each line
+
+' Warning 
+' - Only ASCII Character are supported
+' - Doesn't support spaces in the query names supported
+
+cls_test1 = p1 String, p2 collection, p3 ArrayList, p4 Long;
+
+cls_test2 = p1 String, p2 collection, p3 ArrayList, p4 Long;

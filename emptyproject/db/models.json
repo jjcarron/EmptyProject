@@ -1,0 +1,24 @@
+{
+    "tables": {
+        "Settings": {
+            "id": {"type": "Integer", "primary_key": true},
+            "Name": {"type": "String"},
+            "PValue": {"type": "String"},
+            "PBoolean": {"type": "Boolean"}
+        },
+        "Casinos": {
+            "id": {"type": "Integer", "primary_key": true},
+            "Name": {"type": "String"},
+            "Online": {"type": "Boolean"},
+            "DZS_ID": {"type": "Integer"}
+        },
+        "ResourceStrings": {
+            "id": {"type": "Integer", "primary_key": true},
+            "Ref": {"type": "String"},
+            "EN": {"type": "String"},
+            "DE": {"type": "String"},
+            "FR": {"type": "String"},
+            "IT": {"type": "String"}
+        }
+	}
+}

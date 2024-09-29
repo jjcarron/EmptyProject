@@ -1,0 +1,26 @@
+id,Name,Online,DZS_ID
+1,Arosa,FALSE,
+2,Bad Ragaz,FALSE,
+3,Baden,TRUE,83041663
+4,Basel,TRUE,83058177
+5,Bern,TRUE,83048998
+6,Courrendlin,FALSE,
+7,Crans-Montana,FALSE,
+8,Davos,TRUE,83042202
+9,Granges-Paccot,FALSE,
+10,Interlaken,TRUE,83046536
+11,Locarno,TRUE,
+12,Lugano,TRUE,83048544
+13,Luzern,TRUE,83042203
+14,Mendrisio,FALSE,
+15,Meyrin,TRUE,83048810
+16,Montreux,TRUE,83058007
+17,Neuchâtel,TRUE,83055177
+18,Pfäffikon,TRUE,83042201
+19,Prilly,FALSE,
+20,Schaffhausen,FALSE,
+21,St. Gallen,FALSE,
+22,St. Moritz,TRUE,
+23,Winterthur,FALSE,
+24,Zermatt,FALSE,
+25,Zürich,FALSE,

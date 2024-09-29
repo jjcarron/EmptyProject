@@ -1,0 +1,4 @@
+CONSTRAINT const_BP_Bonus FOREIGN KEY (Bonus_fk) REFERENCES tbl_Bonus (id),
+CONSTRAINT const_BP_Period FOREIGN KEY (Period_fk) REFERENCES tbl_Periods (id),
+CONSTRAINT const_BP_Bonus_KPI FOREIGN KEY (Bonus_KPI_fk) REFERENCES tbl_Bonus_KPIs (id),
+CONSTRAINT const_BP_Player_KPI FOREIGN KEY (Player_KPI_fk) REFERENCES tbl_Player_KPIs (id); 

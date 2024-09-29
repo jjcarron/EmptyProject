@@ -1,0 +1,44 @@
+QueryName,Operation,Title,X_Name,Y_Name,Sheet_Prefix,Formula,Draw_Total,Draw_Delta,Draw_Casino
+crw_BO_Total_Bans_Casino,BO,Total des exclusions de jeu du casino (Données du casino),Année,Exclusions de jeu,TEJCASINO,BO_4.1,TRUE,TRUE,FALSE
+crw_BO_Delta_Bans,BO,Différence annuelle des exclusions de jeu du casino (Calculée),Année,Exclusions de jeu,DAEJ,BO_97.1,TRUE,FALSE,TRUE
+crw_BO_Total_Bans_Computed,BO,Total des exclusions de jeu du casino (Calculé) ,Année,Exclusions de jeu,TEJC,BO_97.2,TRUE,FALSE,TRUE
+crw_BO_Total_Bans_Err,BO,Total mentionné par le casino - Total calculé,Année,Exclusions de jeu,TEJErr,BO_97.3,TRUE,FALSE,TRUE
+crw_LB_Delta_Bans_Computed,LB,Variation annuelle des exclusions de jeu du casino (Calculée),Année,Exclusions de jeu,DEJ,LB_97.1,TRUE,FALSE,TRUE
+crw_LB_Total_Bans_Computed,LB,Total des exclusions de jeu du casino (Calculé) ,Année,Exclusions de jeu,TEJC,LB_97.2,TRUE,FALSE,TRUE
+crw_OL_Delta_Bans_Computed,OL,Variation annuelle des exclusions de jeu du casino (Calculée),Année,Exclusions de jeu,DEJ,OL_97.1,TRUE,FALSE,TRUE
+crw_OL_Total_Bans_Computed,OL,Total des exclusions de jeu du casino (Calculé) ,Année,Exclusions de jeu,TEJC,OL_97.2,TRUE,FALSE,TRUE
+crw_LB_Bans,LB,Exclusions de jeu,Année,Exclusions de jeu,EJ,LB_4.2,FALSE,FALSE,TRUE
+crw_LB_Bans_for_100K_Entries,LB,Exclusions de jeu pour 100 000 entrées,Année,Exclusions de jeu,EJ100KE,LB_4.2 / LB_2.1 * 100000,FALSE,FALSE,TRUE
+crw_LB_Bans_for_100K_Players,LB,Exclusions de jeu pour 100 000 joueurs,Année,Exclusions de jeu,EJ100KJ,LB_4.2 / LB_2.2 * 1E5,FALSE,FALSE,TRUE
+crw_LB_Bans_for_10Mio_GGR,LB,Exclusions de jeupour 10 millions de PBJ,Année,Exclusions de jeu,EJ10MioPBJ,LB_4.2 / LB_99.1 * 1E7,FALSE,FALSE,TRUE
+crw_LB_EarlyDetectionProcesses,LB,Processus de détection précoce,Année,Processus de détection précoce,DP,LB_3.1,FALSE,FALSE,TRUE
+crw_LB_EarlyDetectionProcesses_Bans_Ratio,LB,Processus de détection précoce / Exclusion des jeux [%],Année,Processus de détection précoce / Exclusion des jeux [%],DP_EEJ_R,LB_3.1 / LB_4.2  * 100,FALSE,FALSE,TRUE
+crw_LB_EarlyDetectionProcesses_for_100K_Entries,LB,Processus de détection précoce pour 100K entrées,Année,Processus de détection précoce,DP100KE,LB_3.1 / LB_2.1 * 1E5,FALSE,FALSE,TRUE
+crw_LB_EarlyDetectionProcesses_for_100K_Players,LB,Processus de détection précoce pour 100K joueurs,Année,Processus de détection précoce,DP100KL,LB_3.1 / LB_2.2 * 1E5,FALSE,FALSE,TRUE
+crw_LB_EarlyDetectionProcesses_for_10Mio_GGR,LB,Processus de détection précoce pour 10Mio PBJ,Année,Processus de détection précoce,PDP10MioBSE,LB_3.1 / LB_99.1 * 1E7,FALSE,FALSE,TRUE
+crw_LB_ED_ClosedWithoutMeasure_ED_Ratio,LB,Processus de détection précoce fermés sans mesure / Processus de détection précoce [%],Année,Processus de détection précoce fermés sans mesure / Processus de détection précoce [%],DPFSM_DP_R,LB_3.3.3 / LB_3.1 * 100,FALSE,FALSE,TRUE
+crw_LB_Entries,LB,Entrées,Année,Entrées,Entrées,LB_2.1,FALSE,FALSE,TRUE
+crw_LB_ForcedBans_Bans_Ratio,LB,Exclusions imposées / Exclusions des jeux [%],Année,Exclusions imposées / Exclusions des jeux [%],EI_EJ_R,LB_3.3.3 / LB_4.2 *100 ,FALSE,FALSE,TRUE
+crw_LB_GGR,LB,PBJ,Année,PBJ,PBJ,LB_99.1,FALSE,FALSE,TRUE
+crw_LB_NoInterventionBans_Bans_Ratio,LB,Exclusions sans intervention / Exclusions des jeux [%],Année,Exclusions sans intervention / Exclusions des jeux [%],ESI_EJ_R,LB_4.2.3.1 / LB_4.2 *100 ,FALSE,FALSE,TRUE
+crw_LB_Players,LB,Entrées,Année,Joueurs,Joueurs,LB_2.2,FALSE,FALSE,TRUE
+crw_LB_RevokedBans,LB,Levées,Année,Levées,Levées,LB_5.2.1 + LB_6.2.1,FALSE,FALSE,TRUE
+crw_LB_UnauthorisedPlayer_Entries,LB,Accès non autorisés au jeu,Année,Accès non autorisés au jeu,ANAaJ,LB_2.5,FALSE,FALSE,TRUE
+crw_OL_Accounts,OL,Comptes,Année,Comptes,Comptes,OL_2.1.2,FALSE,FALSE,TRUE
+crw_OL_ActivePlayers,OL,Joueurs actifs,Année,Actifs,JA,OL_98.1,FALSE,FALSE,TRUE
+crw_OL_Bans,OL,Exclusions de jeu,Année,Exclusions de jeu,EJ,OL_4.2,FALSE,FALSE,TRUE
+crw_OL_Bans_for_10K_Accounts,OL,Exclusions de jeu pour 10 000 comptes,Année,Exclusions de jeu,EJ10KC,OL_4.2 / OL_2.1.2 * 1E4,FALSE,FALSE,TRUE
+crw_OL_Bans_for_10K_ActivePlayers,OL,Exclusions de jeu pour 10 000 joueurs actifs,Année,Bans,EJ10KJA,OL_4.2 / OL_98.1 * 1E4,FALSE,FALSE,TRUE
+crw_OL_Bans_for_10Mio_GGR,OL,Exclusions de jeu pour 10 Mio de PBJ,Année,Exclusions de jeu,EJ10MioPBJ,OL_4.2 / OL_99.1 * 1E7,FALSE,FALSE,TRUE
+crw_OL_EarlyDetectionProcesses,OL,Processus de détection précoce,Année,Processus de détection précoce,DP,OL_3.1,FALSE,FALSE,TRUE
+crw_OL_EarlyDetectionProcesses_Bans_Ratio,OL,Processus de détection précoce / Exclusions de jeu [%],Année,Processus de détection précoce / Exclusions de jeu [%],DP_EJ_R,OL_3.1 / OL_4.2 *100,FALSE,FALSE,TRUE
+crw_OL_EarlyDetectionProcesses_for_10K_Accounts,OL,Processus de détection précoce pour 10 000 comptes,Année,Processus de détection précoce,BDP10KC,OL_3.1 / OL_2.1.2 * 1E4,FALSE,FALSE,TRUE
+crw_OL_EarlyDetectionProcesses_for_10K_ActivePlayers,OL,Processus de détection précoce pour 10 000 joueurs actifs,Année,Processus de détection précoce,BDP10KJA,OL_3.1 / OL_98.1 * 1E4,FALSE,FALSE,TRUE
+crw_OL_EarlyDetectionProcesses_for_10Mio_GGR,OL,Processus de détection précoce pour 10 millions de PBJ,Année,Processus de détection précoce,BDP10MioPBJ,OL_3.1 / OL_99.1 * 1E7,FALSE,FALSE,TRUE
+crw_OL_ED_ClosedWithoutMeasure_ED_Ratio,OL,Processus de détection précoce fermés sans mesure / Processus de détection précoce [%],Année,Processus de détection précoce fermés sans mesure / Processus de détection précoce [%],DPFSM_DP_R,OL_3.3.3 / OL_3.1 * 100,FALSE,FALSE,TRUE
+crw_OL_ForcedBans_Bans_Ratio,OL,Exclusions des jeux imposées / Exclusions des jeux [%],Année,Exclusions des jeux imposées / Exclusions des jeux [%],EJI_EJ_R,OL_3.3.3 / OL_4.2 *100,FALSE,FALSE,TRUE
+crw_OL_GGR,OL,PBJ,Année,PBJ,PBJ,OL_99.1,FALSE,FALSE,TRUE
+crw_OL_NoInterventionBans_Bans_Ratio,OL,Exclusions des jeux sans intervention / Exclusions des jeux [%],Année,Exclusions des jeux sans intervention / Exclusions des jeux [%],EJSI_EJ_R,OL_4.2.3.1 / OL_4.2 *100,FALSE,FALSE,TRUE
+crw_OL_RevokedBans,OL,Levées,Année,Levées,Levées,OL_5.2.1 + OL_6.2.1,FALSE,FALSE,TRUE
+crw_OL_UnauthorisedPlayer_GameAccesses,OL,Accès non autorisés au jeu,Année,Accès non autorisés au jeu,ANAaJ,OL_2.5,FALSE,FALSE,TRUE
+,,,,,,,,,

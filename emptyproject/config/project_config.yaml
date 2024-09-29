@@ -1,0 +1,49 @@
+project:
+  properties:
+    name: "Empty Project"
+    description: "As starter for new application"
+    date: 30.09.2023
+    version: 0.1.0
+
+  dirs:
+    # dir can be absolute or relative
+    # all the relative dirs are relative to the base_dir which is the directory where the main script is located
+    # and will be expanded to absolute paths by the framework.project.py
+    # the dirs items can be used as variables recursively with the notation [Variable]
+
+    data: "../data"
+    input: "[data]/input"
+    output: "[data]/output"
+    templates: "[data]/templates"
+    docs: "../docs"
+    init: "[data]/init_data"
+    database: "[data]/db"
+    log: "[data]/log"
+    config: "config"
+    models: "models"
+    tools: "../tools"
+
+  paths:
+    # path can be absolute or relative
+    # all the relative paths are relative to the base_dir which is the directory where the main script is located
+    # and will be expanded to absolute paths by the class lib.project.py
+    
+    project_config_file: "[config]/project_config.yaml"
+    logging_config_file: "[config]/logging_config.yaml"
+    access_db_file: "[database]/EmptyProj.accdb"
+    sqlite_db_file: "[database]/EmptyProj.db"
+    initial_xl_data: "[init]/Basic_Data.xlsx"
+
+  masks:
+    #regular expressions to retrieve information from the directory structure
+    # \{year\} permet de definir l'année dans le programme
+    #\{operation\}  permet de definir le type OL | LB dans le programme as example
+    input_files_mask: '^(\w+.+)[ -_]FO[ -_]MyForm[ -_]\{operation\}-\{year\}\.xlsx$'
+   
+  connections:
+    #Database connection information
+    
+    access_conn_str: "DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};"
+    access_uri: "access+pyodbc:///?odbc_connect=[access_conn_str]"
+    sqlite_uri: "sqlite:///{db_path}"
+    sqlite_memory_uri: "sqlite:///:memory:"
