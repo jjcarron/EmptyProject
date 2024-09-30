@@ -13,7 +13,7 @@ Functions:
 
 import os
 
-from logger import debug_logger, user_logger
+from lib.logger import debug_logger, user_logger
 from this_project import ThisProject
 
 

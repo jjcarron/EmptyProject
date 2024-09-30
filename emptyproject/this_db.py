@@ -22,16 +22,10 @@ Methods:
     - add_annual_computed_exclusions: Adds annual computed exclusions to the database.
     - replace_ref: Replaces old criterion references with new ones.
 """
-# pylint: disable=broad-exception-caught
-# pylint: disable=not-callable
-# pylint: disable=duplicate-code
+
+# pylint: disable=too-few-public-methods
 
 from db.core_db import CoreDB
-from db.models import Casinos
-from db.sqlalchemy_extensions import Nz
-from shared import log
-from sqlalchemy import String, and_, func, select, update
-from sqlalchemy.orm import Session, aliased
 
 
 class ThisDB(CoreDB):
@@ -39,5 +33,3 @@ class ThisDB(CoreDB):
     ThisDB extends the CoreDB class, providing methods to perform specific
     database operations related to casino criteria and values.
     """
-
-

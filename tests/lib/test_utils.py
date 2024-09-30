@@ -1,7 +1,6 @@
 import os
 
 import pytest
-
 from utils import \
     create_short_name  # Assurez-vous d'importer correctement votre fonction
 

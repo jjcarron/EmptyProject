@@ -43,13 +43,11 @@ Methods:
 # pylint: disable=too-many-instance-attributes
 
 import os
-import subprocess
 import sys
-from datetime import datetime
 
 import pypyodbc
-from logger import user_logger as log
-from project import Project
+from lib.logger import user_logger as log
+from lib.project import Project
 
 
 class ThisProject(Project):
@@ -87,7 +85,7 @@ class ThisProject(Project):
         self.access_db_file = self.get_path('access_db_file')
         self.sqlite_db_file = self.get_path('sqlite_db_file')
         self.initial_data_file = self.get_path('initial_xl_data')
-        
+
         # Masks
         self.input_file_mask = self.get_mask('input_file_mask')
 
@@ -180,17 +178,12 @@ class ThisProject(Project):
                 pypyodbc.win_create_mdb(mdb_path)
                 log.info("DB: %s created", mdb_path)
 
-            if os.getenv('USERDOMAIN') != 'EJPD':
-                self.convert_mdb_to_accdb(mdb_path, db_path)
-                log.info("DB: %s converted to %s", mdb_path, db_path)
-            else:
-                log.error(
-                    "The database %s doesn't exist and cannot be created programmatically. "
-                    "Please create it manually.", db_path)
-                sys.exit()
+            log.error(
+                "The database %s doesn't exist and cannot be created programmatically. "
+                "Please create it manually.", db_path)
+            sys.exit()
         else:
             log.info("DB %s exists", db_path)
-
 
     def set_this_db(self, this_db):
         """

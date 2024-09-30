@@ -14,8 +14,9 @@ import os
 import re
 
 import yaml
+from lib.singleton_meta import SingletonMeta
 
-from singleton_meta import SingletonMeta
+# pylint: disable=broad-exception-caught
 
 
 class Project(metaclass=SingletonMeta):
@@ -64,7 +65,6 @@ class Project(metaclass=SingletonMeta):
         path = self.config['project']['paths'].get(key)
         return self._resolve_path(self._replace_variables(path))
 
-    
     def get_mask(self, key):
         """
         Retrieves and resolves the path corresponding to a given key from the configuration.
@@ -77,7 +77,7 @@ class Project(metaclass=SingletonMeta):
         """
         mask = self.config['project']['masks'].get(key)
         return mask
-    
+
     def get_dir(self, key):
         """
         Retrieves and resolves the directory path corresponding to a given key
@@ -120,22 +120,22 @@ class Project(metaclass=SingletonMeta):
     def _resolve_path(self, path):
         """
         Resolves a relative path to an absolute path based on the base directory.
-        
+
         Args:
             path (str): The path to resolve.
-        
+
         Returns:
             str: The resolved absolute path, or an empty string if an error occurs.
         """
         try:
             if not path:  # Check if the path is empty or None
                 raise ValueError("The path is empty or None.")
-            
+
             if os.path.isabs(path):
                 return path
-            
+
             return os.path.abspath(os.path.join(self.base_dir, path))
-        
+
         except Exception as e:
             # Log the error and return an empty string
             print(f"Error resolving path: {e}")

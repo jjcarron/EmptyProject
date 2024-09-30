@@ -1,5 +1,5 @@
 [MASTER]
-init-hook='import sys; sys.path.append("playsafemetrics"); sys.path.append("playsafemetrics/db");'
+init-hook='import sys; sys.path.append("emptyproject"); 
 
 const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 

@@ -19,6 +19,7 @@ Options:
     -x, --debug                  Enable debug mode for logging.
 """
 # pylint: disable=broad-exception-caught
+# pylint: disable=pointless-string-statement
 
 import argparse
 import glob
@@ -26,12 +27,10 @@ import logging
 import os
 import sys
 
-from cross_views import create_excel_export
 from db.crud import CRUDRepository
 from shared import dlog, log, project
-from this_db import ThisDB
 from sqlalchemy.orm import Session
-
+from this_db import ThisDB
 from xl.xl_initial_data import XlInitialData
 
 
@@ -280,6 +279,10 @@ def main():
     operation = args.operation
     language = args.language
 
+    # avoid  pylint warning if they are unused
+    _ = operation
+    _ = language
+
     match args.command:
         case 'create':
             connect_database(args)
@@ -295,13 +298,12 @@ def main():
 
                 load_initial_data(XlInitialData, project.initial_data_file)
 
- """
+                """
                 load_data(
                     XlDzsAnnualPlayerData,
                     project.get_path('fichier'),
                     'Table')
-"""
- 
+                """
 
             except Exception as e:
                 log.error("An error occurred: %s", e)

@@ -2,7 +2,6 @@ import logging
 import os
 
 import pytest
-
 from logger import debug_logger, setup_logging, user_logger
 
 

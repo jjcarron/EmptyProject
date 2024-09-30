@@ -15,8 +15,7 @@ Classes:
 # pylint: disable=duplicate-code
 
 from db.db import Database
-from db.models import (Casinos, ResourceStrings,  Settings)
-from db.sqlalchemy_extensions import Substr
+from db.models import Casinos, ResourceStrings, Settings
 from shared import log
 from sqlalchemy.orm import Session
 
@@ -132,7 +131,6 @@ class CoreDB(Database):
             return []
         finally:
             next(db_generator, None)
-
 
     def get_resource_strings(self):
         """
