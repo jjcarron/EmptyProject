@@ -53,7 +53,7 @@ def run_command(command, cwd=None):
         sys.exit(1)
 
 def main():
-    empty_project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "emptyproject"))
+    empty_project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
     if not os.path.exists(empty_project_path):
         print(f"EmptyProject template directory not found at {empty_project_path}")
@@ -75,7 +75,16 @@ def main():
     # a) Supprimer le répertoire .git s'il existe
     git_dir = os.path.join(new_project_path, ".git")
     if os.path.exists(git_dir):
-        shutil.rmtree(git_dir)
+        try:
+            shutil.rmtree(git_dir)
+        except PermissionError:
+            # Change the permissions of the directory and try again
+            for root, dirs, files in os.walk(git_dir):
+                for dir in dirs:
+                    os.chmod(os.path.join(root, dir), 0o777)
+                for file in files:
+                    os.chmod(os.path.join(root, file), 0o777)
+            shutil.rmtree(git_dir)
 
     # b) Remplacer 'emptyproject' par newproject dans .pylintrc
     replace_in_file(os.path.join(new_project_path, ".pylintrc"), "emptyproject", new_project)
@@ -108,6 +117,7 @@ def main():
     # i) Exécuter pylint
     print("Running pylint...")
     run_command(f"pylint {new_project}", cwd=new_project_path)
+    run_command(f"pylint tools", cwd=new_project_path)
 
 if __name__ == "__main__":
     main()
