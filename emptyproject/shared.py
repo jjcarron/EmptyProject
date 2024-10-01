@@ -3,6 +3,9 @@ This module initializes the project environment by setting up the project
 configuration and loggers. The project configuration is loaded from a YAML
 file, and loggers are set up for both user-level and debug-level logging.
 
+furthermore it provides some other utilities using log like
+- function to validate the provided file path.
+
 Classes:
     ThisProject: Handles project-specific configuration and paths.
 
@@ -47,6 +50,40 @@ def setup_project():
 
     return proj, user_log, debug_log
 
-
 # Initialize the project environment
 project, log, dlog = setup_project()
+
+def check_path(path):
+    """
+    Validates the provided file path.
+
+    Args:
+        path (str): The file path to check.
+
+    Returns:
+        bool: True if the path is valid, False otherwise.
+    """
+    if path is None or path == '':
+        return False
+
+    if path == ':memory:':
+        return True
+
+    directory = os.path.dirname(path)
+    if not os.path.exists(directory):
+        log.warning("The directory '%s' does not exist.", directory)
+        return False
+
+    filename = os.path.basename(path)
+    filename_no_ext, file_ext = os.path.splitext(filename)
+    if not filename_no_ext or not file_ext:
+        log.warning(
+            "The path '%s' does not contain a valid file name with an extension.",
+            path)
+        return False
+
+    return True
+
+
+
+

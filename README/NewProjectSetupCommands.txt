@@ -1,5 +1,7 @@
-J'ai la structure de répertoire suivante :
-V:\WORK\EMPTYPROJECT
+Instructions à ChatGPT pour la création d'un script:
+====================================================
+
+EMPTYPROJECT
 │   .gitignore
 │   .pylintrc
 │   pytest.ini
@@ -93,25 +95,52 @@ V:\WORK\EMPTYPROJECT
             pyclean.ps1
             sqlite_create_and_export.ps1
 
-il s'agit d'un projet nommé EmptyProject qui sera utilisé pour créé de nouveaux projets. donne-moi un script python qui sera pacé dans le sous répertoire tools du projet. 
+
+La structure de répertoire ci-dessus représente un modèle de projet nommé EmptyProject. Il sera utilisé pour créer de nouveaux projets. 
+
+Donne-moi un script python qui sera pacé dans le sous répertoire tools du projet. 
+
 Fonctionnalités:
-il demandera le nom du nouveau projet "newProjectName". Ce paramètre doit être défini, puis le chemin du répertoire dans lequel il doit être créé "ProjectPath". s'il n'est pas défini, il sera mis deux niveau plus haut que le script et son chmein vérifié. S'il n'existe pas il sera redemandé.
+1) demander le nom du nouveau projet "newProjectName". Ce paramètre doit être défini. 
+2) demander le nom duchemin du répertoire dans lequel il doit être créé "ProjectPath". s'il n'est pas défini, il sera mis deux niveaux plus haut que le script et son chmein vérifié. S'il n'existe pas il sera demandé ä nouveau.
 
-Le script crée ensuite le répertoire ProjectPath/newProjectName, puis copie tout ce qui se trouve dans EmptyProject dans ce répertoire.
-Il faut compléter le script avec les commandes suivantes:
-Dans le répertoire principal en assumant que newproject = lower case  du "newProjectName" choisi
-a) supprimmer .git
-b) remplacer 'emptyproject' par newproject dans .pylintrc global
-c) remplacer 'emptyproject' par newproject dans pytest.ini global
-d) remplacer 'EmpyProject' par le newProjectName dans config/config_project.yaml global
-e) remplacer la valeur dela colonne EN de la ligne pour laquelle Ref=APP_DATA de la feuille ResourceStrings par le newProjectName dans le fichier data\init_data\Basic_Data.xlsx
+3) créer le répertoire ProjectPath/newProjectName
+4) copier tout ce qui se trouve dans EmptyProject dans ce répertoire.
+5) compléter le script avec les commandes suivantes exécutées dans le répertoire principal "ProjectPath/newProjectName" en assumant que newproject = newProjectName.lower() 
+	a) supprimmer .git
+	b) remplacer 'emptyproject' par newproject dans .pylintrc global
+	c) remplacer 'emptyproject' par newproject dans pytest.ini global
+	d) remplacer 'EmpyProject' par le newProjectName dans config/config_project.yaml global
+	e) remplacer la valeur dela colonne EN de la ligne pour laquelle Ref=APP_NAME de la feuille ResourceStrings par le newProjectName dans le fichier data\init_data\Basic_Data.xlsx
+	f) renommer le répertoire emptyproject avec lowercase du "newProjectName" choisi
+	g) exécuter la sequence
+		git init
+		git add .
+		git commit -m "Initial commit"
+		
+	h) executer pytest newproject
+		
+	i) exécuter	pylint newproject tests tools
+	
+===============================
 
-f) renommer le répertoire emptyproject avec lower case  du "newProjectName" choisi
-g) exécuter la sequence
-	git init
-	git add .
-	git commit -m "Initial commit"
-	
-h) executer pytest 
-	
-i) exécuter	pylint
+Le résultat avait deux petites erreurs due à des imprécisions dans la formulation initiale 
+
+===============================
+
+Nouvelle instruction à ChatGPT pour obtenir la documentation du code
+
+"Add a module docstring and method docstring"
+
+Ensuite:
+
+nettoyage à l'aide de powershell pyclean.ps1 
+
+ou depuis le répertoire tools
+
+python  remove_trailing_whitespaces.py setup_new_project.py
+python -m isort --overwrite-in-place setup_new_project.py
+python -m autopep8 --in-place --aggressive --aggressive  setup_new_project.py
+python -m pylint setup_new_project.py
+
+==============================

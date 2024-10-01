@@ -22,143 +22,19 @@ Options:
 # pylint: disable=pointless-string-statement
 
 import argparse
-import glob
 import logging
-import os
 import sys
 
-from db.crud import CRUDRepository
-from shared import dlog, log, project
-from sqlalchemy.orm import Session
+from lib.db_loader import DB_Loader
+from lib.utils import get_uri_str   
+
+from shared import dlog, log, project, check_path
+
 from this_db import ThisDB
 from xl.xl_initial_data import XlInitialData
 
-
-def get_uri_str(db_type):
-    """
-    Returns the appropriate database URI key based on the database type.
-
-    Args:
-        db_type (str): The type of database ('sqlite' or 'access').
-
-    Returns:
-        str: The corresponding URI key.
-    """
-    match db_type:
-        case 'sqlite':
-            return 'sqlite_uri'
-        case 'access':
-            return 'access_uri'
-        case _:
-            return None
-
-
-def load_initial_data(cls, xl_file, post_processing=None):
-    """
-    Loads initial data from an Excel file into the database.
-
-    Args:
-        cls: The class responsible for loading the data.
-        xl_file (str): The path to the Excel file.
-        post_processing (function, optional): A function to call after data is loaded.
-    """
-    log.info("Loading %s ...", xl_file)
-    xl = cls(xl_file)
-    xl.load_data()
-    if post_processing:
-        post_processing()
-    log.info("%s Loaded.\n", xl_file)
-
-
-def load_data_from_file(cls, xl_file_pattern, table, post_processing=None):
-    """
-    Loads data from multiple Excel files matching a pattern into the database.
-
-    Args:
-        cls: The class responsible for loading the data.
-        xl_file_pattern (str): The pattern to match Excel files.
-        table (str): The database table to insert data into.
-        post_processing (function, optional): A function to call after data is loaded.
-    """
-    files = glob.glob(xl_file_pattern)
-    for file in files:
-        load_data(cls, file, table, post_processing)
-
-
-def load_data(cls, xl_file, table, post_processing=None):
-    """
-    Loads data from a single Excel file into the database.
-
-    Args:
-        cls: The class responsible for loading the data.
-        xl_file (str): The path to the Excel file.
-        table (str): The database table to insert data into.
-        post_processing (function, optional): A function to call after data is loaded.
-    """
-    log.info("Loading %s ...", xl_file)
-
-    this_db = project.get_this_db()
-    db_generator = this_db.get_db()
-    db: Session = next(db_generator)
-
-    try:
-        # db_type = db.bind.dialect.name
-        xl = cls(xl_file)
-        data_to_insert = xl.load_data()
-
-        for data in data_to_insert:
-            table_class = this_db.get_table_class(table)
-            new_entry = table_class(**data)
-            if new_entry.Casino == 'Total':
-                continue
-            CRUDRepository.create(db, new_entry)
-
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        log.error("Error inserting data: %s", e)
-    finally:
-        next(db_generator, None)
-
-    if post_processing:
-        post_processing()
-
-    log.info("%s Loaded.\n", xl_file)
-
-
-def check_path(path):
-    """
-    Validates the provided file path.
-
-    Args:
-        path (str): The file path to check.
-
-    Returns:
-        bool: True if the path is valid, False otherwise.
-    """
-    if path is None or path == '':
-        return False
-
-    if path == ':memory:':
-        return True
-
-    directory = os.path.dirname(path)
-    if not os.path.exists(directory):
-        log.warning("The directory '%s' does not exist.", directory)
-        return False
-
-    filename = os.path.basename(path)
-    filename_no_ext, file_ext = os.path.splitext(filename)
-    if not filename_no_ext or not file_ext:
-        log.warning(
-            "The path '%s' does not contain a valid file name with an extension.",
-            path)
-        return False
-
-    return True
-
-
-def connect_database(args):
+        
+def set_project_database(args):
     """
     Connects to the database based on the provided arguments.
 
@@ -174,9 +50,6 @@ def connect_database(args):
         connection_uri = project.get_connection_uri(uri)
     else:
         dlog.info("The database %s is not supported yet", args.db_type)
-        sys.exit()
-
-    dlog.info("Connection_uri: %s", connection_uri)
 
     try:
         this_db = ThisDB(connection_uri)
@@ -185,8 +58,7 @@ def connect_database(args):
         log.error("An error occurred: %s", e)
     finally:
         pass
-
-
+        
 def main():
     """
     Main entry point for the script. Parses command-line arguments and
@@ -283,28 +155,24 @@ def main():
     _ = operation
     _ = language
 
+    set_project_database(args)
     match args.command:
         case 'create':
-            connect_database(args)
+            set_project_database(args)
             try:
                 this_db = project.get_this_db()
                 this_db.init_db(drop_all=True)
 
                 if this_db is None:
                     log.error("Database initialization failed.")
-                    sys.exit()
 
                 log.info("Database initialized.")
+                dbl = DB_Loader(this_db)
+                dbl.load_all_sheets(XlInitialData, project.initial_data_file)
 
-                load_initial_data(XlInitialData, project.initial_data_file)
-
-                """
-                load_data(
-                    XlDzsAnnualPlayerData,
-                    project.get_path('fichier'),
-                    'Table')
-                """
-
+                # Load other data from Excel files here for example: 
+                # dbl.load_data(OtherData, project.get_path('fichier'), 'Table')
+            
             except Exception as e:
                 log.error("An error occurred: %s", e)
             finally:
@@ -313,10 +181,8 @@ def main():
             print("Load command is not defined yet.")
             sys.exit()
         case 'export':
-            connect_database(args)
             this_db = project.get_this_db()
             sys.exit()
-
 
 if __name__ == "__main__":
     main()

@@ -29,75 +29,271 @@ This README would normally document whatever steps are necessary to get your app
 - Other community or team contact
 
 ### Directory structure
+EmptyProject
+│   .gitignore
+│   .pylintrc
+│   pytest.ini
+│   README.md
+│   requirements.txt
+│   setup.py
+│
+├───.vscode
+│       launch.json
+│
+├───data
+│   ├───db
+│   │       EmptyProj.accdb
+│   │       EmptyProj.db
+│   │
+│   ├───init_data
+│   │       Basic_Data.xlsx
+│   │
+│   ├───input
+│   ├───log
+│   ├───output
+│   ├───references
+│   └───templates
+├───docs
+├───emptyproject
+│   │   empty_project.py
+│   │   shared.py
+│   │   this_db.py
+│   │   this_project.py
+│   │   __init__.py
+│   │
+│   ├───config
+│   │       logging_config.yaml
+│   │       project_config.yaml
+│   │
+│   ├───db
+│   │       base.py
+│   │       core_db.py
+│   │       crud.py
+│   │       db.py
+│   │       models.json
+│   │       models.py
+│   │       sqlalchemy_extensions.py
+│   │       __init__.py
+│   │
+│   ├───lib
+│   │       logger.py
+│   │       pd_version_dependent_code_example.py
+│   │       project.py
+│   │       singleton_meta.py
+│   │       utils.py
+│   │       __init__.py
+│   │
+│   └───xl
+│           xl.py
+│           xl_initial_data.py
+│           __init__.py
+│
+├───msaccess_code
+│   ├───db
+│   ├───dbDefs
+│   ├───dbInitData
+│   └───docs
+├───README
+│       NewProjectSetupCommands.txt
+│
+├───tests
+│   │   conftest.py
+│   │   test_shared.py
+│   │   test_this_project.py
+│   │   __init__.py
+│   │
+│   ├───config
+│   ├───db
+│   ├───lib
+│   │       test_logger.py
+│   │       test_utils.py
+│   │
+│   └───xl
+└───tools
+    │   compare_excel_result.py
+    │   json_2_classes.py
+    │   process.py
+    │   remove_trailing_whitespaces.py
+    │   setup_new_project.py
+    │   tabledefs_2_json.py
+    │
+    ├───lib
+    │       db_class_generator.py
+    │       easy_definition.py
+    │
+    └───powershell
+            access_create_and_export.ps1
+            CheckAgainstRefs.ps1
+            pyclean.ps1
+            sqlite_create_and_export.ps1
 
-PLAYSAFEMETRICS  
-│ .gitignore  
-│ README.md  
-│ requirements.txt  
-│ setup.py  
-│  
-├── config  
-│ ├── logging_config.yaml  
-│ └── project_config.yaml  
-│  
-├── data  
-│  
-├── db  
-│  
-├── init_data  
-│  
-├── input  
-│  
-├── log  
-│  
-├── output  
-│  
-├── template  
-│  
-├── docs  
-│  
-├── PlaySafeMetrics  
-│ │ gui.py  
-│ │ libsqlalchemy_extensions.py  
-│ │ play_safe_metrics.py  
-│ │ shared.py  
-│ │ sok_db.py  
-│ │ this_project.py  
-│ │  
-│ ├── db  
-│ │ ├── crud.py  
-│ │ ├── db.py  
-│ │ ├── utils.py  
-│ │ └── **init**.py  
-│ │  
-│ ├── lib  
-│ │ ├── easy_definition.py  
-│ │ ├── logger.py  
-│ │ ├── project.py  
-│ │ ├── sqlalchemy_extensions.py  
-│ │ └── **init**.py  
-│ │  
-│ ├── models  
-│ │ ├── base.py  
-│ │ ├── models.py  
-│ │ ├── schema.json  
-│ │ └── **init**.py  
-│ │  
-│ ├── xl  
-│ │ ├── xl.py  
-│ │ ├── xl_dzs_activity_file.py  
-│ │ ├── xl_dzs_annual_player_data.py  
-│ │ ├── xl_ggr.py  
-│ │ ├── xl_initial_data.py  
-│ │ ├── xl_sok_2002_2006.py  
-│ │ ├── xl_sok_2007_2014.py  
-│ │ ├── xl_sok_2015_2019.py  
-│ │ └── xl_sok_2020_2023.py  
-│  
-├── tests  
-│  
-└── tools  
-├── json_2_classes.py  
-├── process.py  
-├── tabledefs_2_json.py  
-└── upgrade_mdb.ps1  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

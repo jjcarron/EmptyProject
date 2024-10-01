@@ -35,8 +35,8 @@ class CoreDB(Database):
         Returns:
             list: A list of all casinos.
         """
-        db_generator = self.get_db()
-        db: Session = next(db_generator)
+
+        db: Session = self.get_session()
         try:
             casinos = db.query(Casinos).all()
             return casinos
@@ -45,7 +45,7 @@ class CoreDB(Database):
             log.error("An error occurred while fetching casinos: %s", e)
             return []
         finally:
-            next(db_generator, None)
+            db.close()
 
     def get_casino_name_from_dzs_id(self, dzs_id):
         """
@@ -57,8 +57,7 @@ class CoreDB(Database):
         Returns:
             str: The name of the casino, or None if not found.
         """
-        db_generator = self.get_db()
-        db: Session = next(db_generator)
+        db: Session = self.get_session()
         try:
             casino = db.query(Casinos).filter(
                 Casinos.DZS_ID == dzs_id).first()
@@ -69,7 +68,7 @@ class CoreDB(Database):
                 "An error occurred while fetching the casino name: %s", e)
             return []
         finally:
-            next(db_generator, None)
+            db.close()
 
     def get_casino_count(self):
         """
@@ -78,8 +77,7 @@ class CoreDB(Database):
         Returns:
             int: The total number of casinos.
         """
-        db_generator = self.get_db()
-        db: Session = next(db_generator)
+        db: Session = self.get_session()
         try:
             casino_count = db.query(Casinos).count()
             return casino_count
@@ -90,7 +88,7 @@ class CoreDB(Database):
             )
             return []
         finally:
-            next(db_generator, None)
+            db.close()
 
     def get_online_casino_count(self):
         """
@@ -99,8 +97,7 @@ class CoreDB(Database):
         Returns:
             int: The number of online casinos.
         """
-        db_generator = self.get_db()
-        db: Session = next(db_generator)
+        db: Session = self.get_session()
         try:
             online_casino_count = db.query(
                 Casinos).filter(Casinos.Online).count()
@@ -111,7 +108,7 @@ class CoreDB(Database):
                 "An error occurred while fetching the online casino count: %s", e)
             return []
         finally:
-            next(db_generator, None)
+            db.close()
 
     def get_settings(self):
         """
@@ -120,8 +117,7 @@ class CoreDB(Database):
         Returns:
             list: A list of all settings.
         """
-        db_generator = self.get_db()
-        db: Session = next(db_generator)
+        db: Session = self.get_session()
         try:
             settings = db.query(Settings).all()
             return settings
@@ -130,7 +126,7 @@ class CoreDB(Database):
             log.error("An error occurred while fetching settings: %s", e)
             return []
         finally:
-            next(db_generator, None)
+            db.close()
 
     def get_resource_strings(self):
         """
@@ -139,8 +135,7 @@ class CoreDB(Database):
         Returns:
             list: A list of all resource strings.
         """
-        db_generator = self.get_db()
-        db: Session = next(db_generator)
+        db: Session = self.get_session()
         try:
             resource_strings = db.query(ResourceStrings).all()
             return resource_strings
@@ -151,7 +146,7 @@ class CoreDB(Database):
             )
             return []
         finally:
-            next(db_generator, None)
+            db.close()
 
     def get_resource_string(self, ref, language):
         """
@@ -164,8 +159,7 @@ class CoreDB(Database):
         Returns:
             str: The resource string in the specified language, or the English version if not found.
         """
-        db_generator = self.get_db()
-        db: Session = next(db_generator)
+        db: Session = self.get_session()
         try:
             row = db.query(ResourceStrings).filter(
                 ResourceStrings.Ref == ref).first()
@@ -205,4 +199,4 @@ class CoreDB(Database):
                 "An error occurred while fetching the resource string: %s", e)
             return []
         finally:
-            next(db_generator, None)
+            db.close()

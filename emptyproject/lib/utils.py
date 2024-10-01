@@ -1,8 +1,3 @@
-"""
-This module provides a utility functions
-
-"""
-
 import re
 
 
@@ -18,6 +13,7 @@ def create_short_name(input_string: str) -> str:
         str: A string composed of all capital letters and digits found in
              the input string.
     """
+
     # Define the regex pattern for capital letters and digits
     pattern = re.compile('[A-Z0-9]')
 
@@ -26,7 +22,7 @@ def create_short_name(input_string: str) -> str:
 
     # Build and return the resulting string
     return ''.join(matches)
-
+    
 
 def format_class_name(table_name):
     """
@@ -47,3 +43,21 @@ def format_class_name(table_name):
     class_name = ''.join(word.capitalize() for word in parts)
 
     return class_name
+
+def get_uri_str(db_type):
+    """
+    Returns the appropriate database URI key based on the database type.
+
+    Args:
+        db_type (str): The type of database ('sqlite' or 'access').
+
+    Returns:
+        str: The corresponding URI key.
+    """
+    match db_type:
+        case 'sqlite':
+            return 'sqlite_uri'
+        case 'access':
+            return 'access_uri'
+        case _:
+            return None
