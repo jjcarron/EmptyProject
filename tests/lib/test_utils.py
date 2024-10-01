@@ -1,5 +1,5 @@
 import pytest
-from emptyproject.lib.utils import create_short_name, format_class_name, get_uri_str
+from lib.utils import create_short_name, format_class_name, get_uri_str
 
 def test_create_short_name():
     assert create_short_name("HelloWorld123") == "HW123"
