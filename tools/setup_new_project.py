@@ -14,11 +14,87 @@ and perform the following actions:
     9. Run `pylint` to check code style compliance.
 """
 import os
+import re
 import shutil
 import subprocess
 import sys
 
 import openpyxl
+
+
+def snakecase(s):
+    """
+    Convert a string to snake_case.
+    """
+    # Insert _ before capital letters, then lower the string
+    s = re.sub(r'(?<!^)(?=[A-Z])', '_', s).lower()
+    s = re.sub(r'[-\s]+', '_', s)  # Replace spaces or dashes with underscores
+    return s
+
+
+def camelcase(s):
+    """
+    Convert a string to camelCase.
+    """
+    s = re.sub(r"(_|-)+", " ", s).title().replace(" ", "")
+    return s[0].lower() + s[1:]
+
+
+def rename_empty_project_files(old_project_dir, new_project_name):
+    """
+    Renames the following files based on the new project name:
+    - empty_project/empty_project.py -> new_project_name.py (in camelCase)
+    - tests/test_empty_project.py -> test_new_project_name.py (in camelCase)
+
+    :param new_project_name: The new project name to be used in renaming the files.
+    """
+    # Generate the new file names
+    py_name = snakecase(new_project_name) + ".py"
+    test_py_name = "test_" + snakecase(new_project_name) + ".py"
+    print(f"test_py_name: {test_py_name}")
+    # Define paths for the original and new files
+    empty_project_py_path = os.path.join(old_project_dir, "empty_project.py")
+    new_project_py_path = os.path.join(old_project_dir, py_name)
+
+    test_dir = os.path.join(old_project_dir, "..", "tests")
+    test_empty_project_py_path = os.path.join(
+        test_dir, "test_empty_project.py")
+    new_test_py_path = os.path.join(test_dir, test_py_name)
+    print(f"new_test_py_path: {new_test_py_path}")
+
+    # Rename the empty_project.py file
+    if os.path.exists(empty_project_py_path):
+        print(f"Renaming {empty_project_py_path} to {new_project_py_path}")
+        os.rename(empty_project_py_path, new_project_py_path)
+    else:
+        print(f"File {empty_project_py_path} does not exist.")
+
+    # Rename the test_empty_project.py file
+    if os.path.exists(test_empty_project_py_path):
+        print(f"Renaming {test_empty_project_py_path} to {new_test_py_path}")
+        os.rename(test_empty_project_py_path, new_test_py_path)
+    else:
+        print(f"File {test_empty_project_py_path} does not exist.")
+
+
+def remove_dir(dir_to_remove):
+    """
+    Remove completely the dir_to_remove if it exist
+
+    :param dir_to_remove
+    """
+
+    if os.path.exists(dir_to_remove):
+        try:
+            shutil.rmtree(dir_to_remove)
+        except PermissionError:
+            # Change the permissions of the directory and try again
+            for root, dirs, files in os.walk(dir_to_remove):
+                for directory in dirs:
+                    os.chmod(os.path.join(root, directory), 0o777)
+                for file in files:
+                    os.chmod(os.path.join(root, file), 0o777)
+            shutil.rmtree(dir_to_remove)
 
 
 def get_new_project_name():
@@ -82,13 +158,13 @@ def update_excel_file(file_path, sheet_name, search_value, new_value):
         file_path (str): The path to the Excel file.
         sheet_name (str): The name of the sheet where the update will be made.
         search_value (str): The value to search for in the first column.
-        new_value (str): The new value to set in the target column (EN).
+        new_value (str): The new value to set in the target column (en).
     """
     wb = openpyxl.load_workbook(file_path)
     sheet = wb[sheet_name]
     for row in sheet.iter_rows():
         if row[0].value == search_value:
-            row[1].value = new_value  # Assuming EN is the second column
+            row[1].value = new_value  # Assuming en is the second column
             break
     wb.save(file_path)
 
@@ -157,17 +233,7 @@ def main():
 
     # a) Remove the .git directory if it exists
     git_dir = os.path.join(new_project_path, ".git")
-    if os.path.exists(git_dir):
-        try:
-            shutil.rmtree(git_dir)
-        except PermissionError:
-            # Change the permissions of the directory and try again
-            for root, dirs, files in os.walk(git_dir):
-                for directory in dirs:
-                    os.chmod(os.path.join(root, directory), 0o777)
-                for file in files:
-                    os.chmod(os.path.join(root, file), 0o777)
-            shutil.rmtree(git_dir)
+    remove_dir(git_dir)
 
     # b) Replace 'emptyproject' with newproject in .pylintrc
     replace_in_file(
@@ -176,6 +242,16 @@ def main():
             ".pylintrc"),
         "emptyproject",
         new_project)
+
+    # b) Replace 'empty_project' with new_project in
+    # tests/test_empty_project.py
+    module_name = snakecase(new_project_name)
+    replace_in_file(
+        os.path.join(
+            new_project_path, "tests",
+            "test_empty_project.py"),
+        "empty_project",
+        module_name)
 
     # c) Replace 'emptyproject' with newproject in pytest.ini
     replace_in_file(
@@ -186,7 +262,7 @@ def main():
         new_project)
 
     # d) Replace 'EmptyProject' with the newProjectName in
-    # config/project_config.yaml
+    #    config/project_config.yaml
     replace_in_file(os.path.join(
         new_project_path, "emptyproject", "config", "project_config.yaml"),
         "EmptyProject", new_project_name)
@@ -203,22 +279,30 @@ def main():
         "APP_NAME",
         new_project_name)
 
-    # f) Rename the directory emptyproject to newproject (lowercase)
     old_project_dir = os.path.join(new_project_path, "emptyproject")
+
+    # f) Rename the main file to newproject (lowercase)
+    rename_empty_project_files(old_project_dir, new_project_name)
+
+    # g) Rename the directory emptyproject to newproject (lowercase)
     new_project_dir = os.path.join(new_project_path, new_project)
     os.rename(old_project_dir, new_project_dir)
 
-    # g) Initialize a new Git repository
+    # h) Initialize a new Git repository
     print("Initializing new git repository...")
     run_command("git init", cwd=new_project_path)
     run_command("git add .", cwd=new_project_path)
     run_command('git commit -m "Initial commit"', cwd=new_project_path)
 
-    # h) Run pytest
+    # i) Remove the .pytest_cache directory if it exists
+    pytest_cache_dir = os.path.join(new_project_path, ".pytest_cache")
+    remove_dir(pytest_cache_dir)
+
+    # j) Run pytest
     print("Running pytest...")
     run_command("pytest", cwd=new_project_path)
 
-    # i) Run pylint
+    # k) Run pylint
     print("Running pylint...")
     run_command(f"pylint {new_project}", cwd=new_project_path)
     run_command("pylint tools", cwd=new_project_path)

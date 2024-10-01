@@ -1,24 +1,24 @@
 {
-    "tables": {
-        "Settings": {
-            "id": {"type": "Integer", "primary_key": true},
-            "Name": {"type": "String"},
-            "PValue": {"type": "String"},
-            "PBoolean": {"type": "Boolean"}
-        },
-        "Casinos": {
-            "id": {"type": "Integer", "primary_key": true},
-            "Name": {"type": "String"},
-            "Online": {"type": "Boolean"},
-            "DZS_ID": {"type": "Integer"}
-        },
-        "ResourceStrings": {
-            "id": {"type": "Integer", "primary_key": true},
-            "Ref": {"type": "String"},
-            "EN": {"type": "String"},
-            "DE": {"type": "String"},
-            "FR": {"type": "String"},
-            "IT": {"type": "String"}
-        }
-	}
+  "tables": {
+    "Settings": {
+      "id": { "type": "Integer", "primary_key": true },
+      "key": { "type": "String" },
+      "p_value": { "type": "String" },
+      "p_bool": { "type": "Boolean" }
+    },
+    "Casinos": {
+      "id": { "type": "Integer", "primary_key": true },
+      "name": { "type": "String" },
+      "online": { "type": "Boolean" },
+      "dzs_id": { "type": "Integer" }
+    },
+    "ResourceStrings": {
+      "id": { "type": "Integer", "primary_key": true },
+      "key": { "type": "String" },
+      "en": { "type": "String" },
+      "de": { "type": "String" },
+      "fr": { "type": "String" },
+      "it": { "type": "String" }
+    }
+  }
 }

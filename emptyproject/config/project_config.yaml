@@ -27,11 +27,11 @@ project:
     # path can be absolute or relative
     # all the relative paths are relative to the base_dir which is the directory where the main script is located
     # and will be expanded to absolute paths by the class lib.project.py
-    
+
     project_config_file: "[config]/project_config.yaml"
     logging_config_file: "[config]/logging_config.yaml"
-    access_db_file: "[database]/EmptyProj.accdb"
-    sqlite_db_file: "[database]/EmptyProj.db"
+    access_db_file: "[database]/Database.accdb"
+    sqlite_db_file: "[database]/Database.db"
     initial_xl_data: "[init]/Basic_Data.xlsx"
 
   masks:
@@ -39,10 +39,10 @@ project:
     # \{year\} permet de definir l'année dans le programme
     #\{operation\}  permet de definir le type OL | LB dans le programme as example
     input_files_mask: '^(\w+.+)[ -_]FO[ -_]MyForm[ -_]\{operation\}-\{year\}\.xlsx$'
-   
+
   connections:
     #Database connection information
-    
+
     access_conn_str: "DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};"
     access_uri: "access+pyodbc:///?odbc_connect=[access_conn_str]"
     sqlite_uri: "sqlite:///{db_path}"

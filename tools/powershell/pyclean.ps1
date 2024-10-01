@@ -1,4 +1,5 @@
-﻿Set-Location \Work\EmptyProject\
+﻿Set-Alias python python.exe
+Set-Location \Work\EmptyProject\
 $to_check_dir = Join-Path -Path (Get-Location) -ChildPath "emptyproject"
  
 python  tools\remove_trailing_whitespaces.py $to_check_dir -r

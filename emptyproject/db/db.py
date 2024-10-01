@@ -96,7 +96,9 @@ class Database:
             ValueError: If no class is found for the given table name.
         """
         for name, obj in inspect.getmembers(tables):
-            if inspect.isclass(obj) and hasattr(obj, '__tablename__') and obj.__tablename__ == table_name:
+            _ = name
+            if inspect.isclass(obj) and hasattr(
+                    obj, '__tablename__') and obj.__tablename__ == table_name:
                 return obj
         raise ValueError(f"No table class found for table: {table_name}")
 

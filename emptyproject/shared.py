@@ -50,8 +50,10 @@ def setup_project():
 
     return proj, user_log, debug_log
 
+
 # Initialize the project environment
 project, log, dlog = setup_project()
+
 
 def check_path(path):
     """
@@ -83,7 +85,3 @@ def check_path(path):
         return False
 
     return True
-
-
-
-

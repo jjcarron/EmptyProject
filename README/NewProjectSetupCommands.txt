@@ -111,7 +111,7 @@ Fonctionnalités:
 	b) remplacer 'emptyproject' par newproject dans .pylintrc global
 	c) remplacer 'emptyproject' par newproject dans pytest.ini global
 	d) remplacer 'EmpyProject' par le newProjectName dans config/config_project.yaml global
-	e) remplacer la valeur dela colonne EN de la ligne pour laquelle Ref=APP_NAME de la feuille ResourceStrings par le newProjectName dans le fichier data\init_data\Basic_Data.xlsx
+	e) remplacer la valeur dela colonne en de la ligne pour laquelle key=APP_NAME de la feuille ResourceStrings par le newProjectName dans le fichier data\init_data\Basic_Data.xlsx
 	f) renommer le répertoire emptyproject avec lowercase du "newProjectName" choisi
 	g) exécuter la sequence
 		git init

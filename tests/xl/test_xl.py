@@ -1,6 +1,7 @@
-import pytest
 import pandas as pd
-from emptyproject.xl.xl import Xl
+import pytest
+from xl.xl import Xl
+
 
 @pytest.fixture
 def xl_instance(tmp_path):
@@ -13,15 +14,18 @@ def xl_instance(tmp_path):
         df2.to_excel(writer, sheet_name="Sheet2", index=False)
     return Xl(file_path)
 
+
 def test_get_dataframe(xl_instance):
     df = xl_instance.get_dataframe("Sheet1")
     assert df.equals(pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]}))
 
     df = xl_instance.get_dataframe("Sheet2")
-    assert df.equals(pd.DataFrame({"A": ["x", "y", "z"], "B": ["a", "b", "c"]}))
+    assert df.equals(pd.DataFrame(
+        {"A": ["x", "y", "z"], "B": ["a", "b", "c"]}))
 
     with pytest.raises(ValueError):
         xl_instance.get_dataframe("NonExistentSheet")
+
 
 def test_find_row_with_ref(xl_instance):
     df = xl_instance.get_dataframe("Sheet1")
@@ -32,6 +36,7 @@ def test_find_row_with_ref(xl_instance):
     assert xl_instance.find_row_with_ref(df, "y") == 1
     assert xl_instance.find_row_with_ref(df, "d") == -1
 
+
 def test_data(xl_instance):
     data = xl_instance.data()
     expected_data = {
@@ -39,6 +44,7 @@ def test_data(xl_instance):
         "Sheet2": [{"A": "x", "B": "a"}, {"A": "y", "B": "b"}, {"A": "z", "B": "c"}]
     }
     assert data == expected_data
+
 
 def test_print_data(xl_instance):
     output = xl_instance.print_data()
@@ -53,6 +59,7 @@ def test_print_data(xl_instance):
         "{'A': 'z', 'B': 'c'}"
     )
     assert output == expected_output
+
 
 def test_str(xl_instance):
     output = str(xl_instance)
@@ -69,6 +76,7 @@ def test_str(xl_instance):
         "2  z  c"
     )
     assert output == expected_output
+
 
 def test_correct_and_convert_value(xl_instance):
     assert xl_instance._correct_and_convert_value("1,234") == 1234.0

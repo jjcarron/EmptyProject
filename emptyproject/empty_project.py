@@ -13,7 +13,7 @@ Commands:
 Options:
     -db, --database PATH         Path to the database file.
     -db_type, --database_type    Type of the database (sqlite or access).
-    -l, --language               Language of the report 'DE' or 'FR' or 'IT' or 'EN'.
+    -l, --language               Language of the report 'de' or 'fr' or 'it' or 'en'.
     -o, --operation              Type of casino operation 'LB' or 'OL' or 'BO' for Both.
     -xl, --excel_file PATH       Path to the Excel file to generate.
     -x, --debug                  Enable debug mode for logging.
@@ -25,15 +25,13 @@ import argparse
 import logging
 import sys
 
-from lib.db_loader import DB_Loader
-from lib.utils import get_uri_str   
-
-from shared import dlog, log, project, check_path
-
+from lib.db_loader import DatabaseLoader
+from lib.utils import get_uri_str
+from shared import check_path, dlog, log, project
 from this_db import ThisDB
 from xl.xl_initial_data import XlInitialData
 
-        
+
 def set_project_database(args):
     """
     Connects to the database based on the provided arguments.
@@ -41,6 +39,7 @@ def set_project_database(args):
     Args:
         args: The command-line arguments.
     """
+    connection_uri = ''
     if args.database_type is None:
         uri = get_uri_str('sqlite')
     else:
@@ -58,7 +57,8 @@ def set_project_database(args):
         log.error("An error occurred: %s", e)
     finally:
         pass
-        
+
+
 def main():
     """
     Main entry point for the script. Parses command-line arguments and
@@ -75,7 +75,7 @@ def main():
     Options:
       -db, --database PATH         Path to the database file.
       -db_type, --database_type    Type of the database (sqlite or access).
-      -l, --language               Language of the report 'DE' or 'FR' or 'IT' or 'EN'
+      -l, --language               Language of the report 'de' or 'fr' or 'it' or 'en'
       -o, --operation              Type of casino operation 'LB' or 'OL' or 'BO' for Both
       -xl, --excel_file PATH       Path to the Excel file to generate.
       -x, --debug                  Enable debug mode.
@@ -106,14 +106,14 @@ def main():
         '-l',
         '--language',
         choices=[
-            'DE',
-            'FR',
-            'IT',
-            'EN'],
+            'de',
+            'fr',
+            'it',
+            'en'],
         nargs='?',
-        default='DE',
+        default='de',
         type=str,
-        help="Determine the language of the excel_sheet. Can be 'DE' or 'FR' or 'IT' or 'EN'")
+        help="Determine the language of the excel_sheet. Can be 'de' or 'fr' or 'it' or 'en'")
     parser.add_argument(
         '-o',
         '--operation',
@@ -167,12 +167,12 @@ def main():
                     log.error("Database initialization failed.")
 
                 log.info("Database initialized.")
-                dbl = DB_Loader(this_db)
+                dbl = DatabaseLoader(this_db)
                 dbl.load_all_sheets(XlInitialData, project.initial_data_file)
 
-                # Load other data from Excel files here for example: 
+                # Load other data from Excel files here for example:
                 # dbl.load_data(OtherData, project.get_path('fichier'), 'Table')
-            
+
             except Exception as e:
                 log.error("An error occurred: %s", e)
             finally:
@@ -181,8 +181,9 @@ def main():
             print("Load command is not defined yet.")
             sys.exit()
         case 'export':
-            this_db = project.get_this_db()
+            print("Load command is not defined yet.")
             sys.exit()
+
 
 if __name__ == "__main__":
     main()

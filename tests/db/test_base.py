@@ -1,6 +1,7 @@
 import pytest
 from db.base import ExtendedBase
 
+
 class TestExtendedBase:
     def test_initialization(self):
         instance = ExtendedBase()
@@ -31,6 +32,7 @@ class TestExtendedBase:
         instance = ExtendedBase()
         instance.id = 1
         assert str(instance) == "ExtendedBase(1)"
+
         class TestExtendedBase:
             def test_initialization(self):
                 instance = ExtendedBase()

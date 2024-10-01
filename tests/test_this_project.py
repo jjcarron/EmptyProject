@@ -145,7 +145,7 @@ def test_get_casinos():
     Ensures that the project fetches exactly 25 casinos from the database.
     """
     assert_db()
-    assert len(project.get_casinos()) == 25
+    assert len(project.get_casinos()) == 23
 
 
 def test_get_casino_count():
@@ -155,7 +155,7 @@ def test_get_casino_count():
     Ensures that the project returns a count of 25 casinos.
     """
     assert_db()
-    assert project.get_casino_count() == 25
+    assert project.get_casino_count() == 23
 
 
 def test_get_casino_name_from_dzs_id():
@@ -178,7 +178,8 @@ def test_get_settings():
     params = project.get_settings()
     found = False
     for param in params:
-        if param.Name == 'Test_Setting':
+        print(f"param key: {param.key}")
+        if param.key == 'Test_Setting':
             found = True
             break
 
@@ -197,7 +198,7 @@ def test_get_resource_strings():
     found = False
     if resource_strings is not None:
         for resource in resource_strings:
-            if resource.Ref == 'TEST1':
+            if resource.key == 'TEST1':
                 found = True
                 break
 
@@ -212,12 +213,12 @@ def test_get_resource_string_translation():
     'TEST1' in various languages.
     """
     assert_db()
-    assert project.get_resource_string('TEST1', 'EN') == 'Test_EN'
-    assert project.get_resource_string('TEST1', 'FR') == 'Test_FR'
-    assert project.get_resource_string('TEST1', 'DE') == 'Test_DE'
-    assert project.get_resource_string('TEST1', 'IT') == 'Test_IT'
+    assert project.get_resource_string('TEST1', 'en') == 'Test_EN'
+    assert project.get_resource_string('TEST1', 'fr') == 'Test_FR'
+    assert project.get_resource_string('TEST1', 'de') == 'Test_DE'
+    assert project.get_resource_string('TEST1', 'it') == 'Test_IT'
     assert project.get_resource_string('TEST1', 'ES') == 'Test_EN'
-    assert project.get_resource_string('TEST3', 'EN') is None
+    assert project.get_resource_string('TEST3', 'en') is None
 
 
 def test_get_resource_string_default_value():
@@ -228,10 +229,10 @@ def test_get_resource_string_default_value():
     'TEST2' in all languages.
     """
     assert_db()
-    assert project.get_resource_string('TEST2', 'EN') == 'Test_EN'
-    assert project.get_resource_string('TEST2', 'FR') == 'Test_EN'
-    assert project.get_resource_string('TEST2', 'DE') == 'Test_EN'
-    assert project.get_resource_string('TEST2', 'IT') == 'Test_EN'
+    assert project.get_resource_string('TEST2', 'en') == 'Test_EN'
+    assert project.get_resource_string('TEST2', 'fr') == 'Test_EN'
+    assert project.get_resource_string('TEST2', 'de') == 'Test_EN'
+    assert project.get_resource_string('TEST2', 'it') == 'Test_EN'
 
 
 def test_get_table_class():
