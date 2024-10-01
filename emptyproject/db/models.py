@@ -25,22 +25,22 @@ class Settings(Base):
         id
                             (Integer):
                             Primary Key
-        Name
+        key
                             (String):
 
-        PValue
+        p_value
                             (String):
 
-        PBoolean
+        p_bool
                             (Boolean):
 
     """
 
     __tablename__ = 'Settings'
     id = Column(Integer, primary_key=True)
-    Name = Column(String, )
-    PValue = Column(String, )
-    PBoolean = Column(Boolean, )
+    key = Column(String, )
+    p_value = Column(String, )
+    p_bool = Column(Boolean, )
 
 
 class Casinos(Base):
@@ -51,22 +51,22 @@ class Casinos(Base):
         id
                             (Integer):
                             Primary Key
-        Name
+        name
                             (String):
 
-        Online
+        online
                             (Boolean):
 
-        DZS_ID
+        dzs_id
                             (Integer):
 
     """
 
     __tablename__ = 'Casinos'
     id = Column(Integer, primary_key=True)
-    Name = Column(String, )
-    Online = Column(Boolean, )
-    DZS_ID = Column(Integer, )
+    name = Column(String, )
+    online = Column(Boolean, )
+    dzs_id = Column(Integer, )
 
 
 class ResourceStrings(Base):
@@ -77,27 +77,27 @@ class ResourceStrings(Base):
         id
                             (Integer):
                             Primary Key
-        Ref
+        key
                             (String):
 
-        EN
+        en
                             (String):
 
-        DE
+        de
                             (String):
 
-        FR
+        fr
                             (String):
 
-        IT
+        it
                             (String):
 
     """
 
     __tablename__ = 'ResourceStrings'
     id = Column(Integer, primary_key=True)
-    Ref = Column(String, )
-    EN = Column(String, )
-    DE = Column(String, )
-    FR = Column(String, )
-    IT = Column(String, )
+    key = Column(String, )
+    en = Column(String, )
+    de = Column(String, )
+    fr = Column(String, )
+    it = Column(String, )

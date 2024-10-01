@@ -60,8 +60,8 @@ class CoreDB(Database):
         db: Session = self.get_session()
         try:
             casino = db.query(Casinos).filter(
-                Casinos.DZS_ID == dzs_id).first()
-            return casino.Name if casino else None
+                Casinos.dzs_id == dzs_id).first()
+            return casino.name if casino else None
         except Exception as e:
             db.rollback()
             log.error(
@@ -100,7 +100,7 @@ class CoreDB(Database):
         db: Session = self.get_session()
         try:
             online_casino_count = db.query(
-                Casinos).filter(Casinos.Online).count()
+                Casinos).filter(Casinos.online).count()
             return online_casino_count
         except Exception as e:
             db.rollback()
@@ -148,13 +148,13 @@ class CoreDB(Database):
         finally:
             db.close()
 
-    def get_resource_string(self, ref, language):
+    def get_resource_string(self, key, language):
         """
         Retrieves a resource string based on its reference and language.
 
         Args:
             ref (str): The reference identifier for the resource string.
-            language (str): The language code ('EN', 'FR', 'IT', 'DE').
+            language (str): The language code ('en', 'fr', 'it', 'de').
 
         Returns:
             str: The resource string in the specified language, or the English version if not found.
@@ -162,33 +162,33 @@ class CoreDB(Database):
         db: Session = self.get_session()
         try:
             row = db.query(ResourceStrings).filter(
-                ResourceStrings.Ref == ref).first()
+                ResourceStrings.key == key).first()
 
             if row is None:
                 log.warning(
-                    "Resource string not found for ref: %s. None returned", ref)
+                    "Resource string not found for key: %s. None returned", key)
                 return None
 
             match language:
-                case 'EN':
-                    resource_string = row.EN
-                case 'FR':
-                    resource_string = row.FR
-                case 'IT':
-                    resource_string = row.IT
-                case 'DE':
-                    resource_string = row.DE
+                case 'en':
+                    resource_string = row.en
+                case 'fr':
+                    resource_string = row.fr
+                case 'it':
+                    resource_string = row.it
+                case 'de':
+                    resource_string = row.de
                 case _:
-                    resource_string = row.EN  # Default to English
+                    resource_string = row.en  # Default to English
 
             if not resource_string or str.strip(resource_string) == '':
-                if row.EN:
-                    resource_string = row.EN
+                if row.en:
+                    resource_string = row.en
                 else:
                     log.warning(
                         "Resource string not found for ref: %s language: %s"
-                        "or EN. None returned",
-                        ref, language
+                        "or en. None returned",
+                        key, language
                     )
                     return None
 

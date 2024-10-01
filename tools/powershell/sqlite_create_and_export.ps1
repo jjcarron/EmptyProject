@@ -14,9 +14,9 @@ $driveLetter = $path.Substring(0, 2)
 Set-Location "$driveLetter\work\PlaySafeMetrics"
 
 python .\playsafemetrics\play_safe_metrics.py create
-python .\playsafemetrics\play_safe_metrics.py export -o LB -l FR
-python .\playsafemetrics\play_safe_metrics.py export -o OL -l FR
-python .\playsafemetrics\play_safe_metrics.py export -o BO -l FR
-python .\playsafemetrics\play_safe_metrics.py export -o LB -l DE
-python .\playsafemetrics\play_safe_metrics.py export -o OL -l DE
-python .\playsafemetrics\play_safe_metrics.py export -o BO -l DE
+python .\playsafemetrics\play_safe_metrics.py export -o LB -l fr
+python .\playsafemetrics\play_safe_metrics.py export -o OL -l fr
+python .\playsafemetrics\play_safe_metrics.py export -o BO -l fr
+python .\playsafemetrics\play_safe_metrics.py export -o LB -l de
+python .\playsafemetrics\play_safe_metrics.py export -o OL -l de
+python .\playsafemetrics\play_safe_metrics.py export -o BO -l de

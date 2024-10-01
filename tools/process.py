@@ -28,7 +28,7 @@ def list_python_processes():
         try:
             if 'python' in proc.info['name'].lower():
                 print(
-                    f"Process ID: {proc.info['pid']}, Name: {proc.info['name']}, "
+                    f"Process ID: {proc.info['pid']}, name: {proc.info['name']}, "
                     f"CPU Usage: {proc.info['cpu_percent']}%")
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass

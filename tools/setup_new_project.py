@@ -82,13 +82,13 @@ def update_excel_file(file_path, sheet_name, search_value, new_value):
         file_path (str): The path to the Excel file.
         sheet_name (str): The name of the sheet where the update will be made.
         search_value (str): The value to search for in the first column.
-        new_value (str): The new value to set in the target column (EN).
+        new_value (str): The new value to set in the target column (en).
     """
     wb = openpyxl.load_workbook(file_path)
     sheet = wb[sheet_name]
     for row in sheet.iter_rows():
         if row[0].value == search_value:
-            row[1].value = new_value  # Assuming EN is the second column
+            row[1].value = new_value  # Assuming en is the second column
             break
     wb.save(file_path)
 

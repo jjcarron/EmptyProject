@@ -1,7 +1,17 @@
+"""
+This module provides utility functions for string manipulation and database URI retrieval.
+Functions:
+    create_short_name(input_string):
+        Generates a short name by extracting all capital letters and digits from the input string.
+    format_class_name(table_name):
+    get_uri_str(db_type):
+"""
+# pylint: disable=duplicate-code
+
 import re
 
 
-def create_short_name(input_string: str) -> str:
+def create_short_name(input_string):
     """
     Generates a short name by extracting all capital letters and digits
     from the input string.
@@ -22,7 +32,7 @@ def create_short_name(input_string: str) -> str:
 
     # Build and return the resulting string
     return ''.join(matches)
-    
+
 
 def format_class_name(table_name):
     """
@@ -43,6 +53,7 @@ def format_class_name(table_name):
     class_name = ''.join(word.capitalize() for word in parts)
 
     return class_name
+
 
 def get_uri_str(db_type):
     """

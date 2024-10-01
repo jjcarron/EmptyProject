@@ -23,7 +23,7 @@ def remove_arosa_and_zermatt(df):
 
     Args:
         df (DataFrame): DataFrame to filter.
-        sheet_name (str): Name of the sheet being filtered.
+        sheet_name (str): name of the sheet being filtered.
 
     Returns:
         DataFrame: Filtered DataFrame.

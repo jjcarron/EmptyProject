@@ -1,7 +1,9 @@
-import pytest
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
-from unittest.mock import patch, MagicMock
-from emptyproject.xl.xl_initial_data import XlInitialData
+import pytest
+from xl.xl_initial_data import XlInitialData
+
 
 @pytest.fixture
 def mock_db_instance():
@@ -10,19 +12,22 @@ def mock_db_instance():
     mock_db.get_table_class.return_value = MagicMock()
     return mock_db
 
+
 @pytest.fixture
 def mock_project(mock_db_instance):
-    with patch('emptyproject.xl.xl_initial_data.project.get_this_db', return_value=mock_db_instance):
+    with patch('xl.xl_initial_data.project.get_this_db', return_value=mock_db_instance):
         yield
+
 
 @pytest.fixture
 def mock_log():
-    with patch('emptyproject.xl.xl_initial_data.log') as mock_log:
+    with patch('xl.xl_initial_data.log') as mock_log:
         yield mock_log
+
 
 @pytest.fixture
 def xl_initial_data():
-    with patch('emptyproject.xl.xl_initial_data.Xl.__init__', return_value=None):
+    with patch('xl.xl_initial_data.Xl.__init__', return_value=None):
         xl_initial_data = XlInitialData("dummy_path")
         xl_initial_data.df_dict = {
             'Sheet1': pd.DataFrame({
@@ -32,7 +37,12 @@ def xl_initial_data():
         }
         yield xl_initial_data
 
-def test_load_data_success(mock_project, mock_log, xl_initial_data, mock_db_instance):
+
+def test_load_data_success(
+        mock_project,
+        mock_log,
+        xl_initial_data,
+        mock_db_instance):
     session = mock_db_instance.get_session.return_value
     table_class = mock_db_instance.get_table_class.return_value
 
@@ -42,7 +52,12 @@ def test_load_data_success(mock_project, mock_log, xl_initial_data, mock_db_inst
     assert session.commit.called
     assert mock_log.info.called_with("Data inserted successfully.")
 
-def test_load_data_error(mock_project, mock_log, xl_initial_data, mock_db_instance):
+
+def test_load_data_error(
+        mock_project,
+        mock_log,
+        xl_initial_data,
+        mock_db_instance):
     session = mock_db_instance.get_session.return_value
     session.add.side_effect = Exception("Insertion error")
 
@@ -51,10 +66,12 @@ def test_load_data_error(mock_project, mock_log, xl_initial_data, mock_db_instan
     assert session.rollback.called
     assert mock_log.error.called_with("Error inserting data: Insertion error")
 
+
 def test_load_data_no_db_instance(mock_log):
-    with patch('emptyproject.xl.xl_initial_data.project.get_this_db', return_value=None):
+    with patch('xl.xl_initial_data.project.get_this_db', return_value=None):
         with pytest.raises(SystemExit):
             xl_initial_data = XlInitialData("dummy_path")
             xl_initial_data.load_data()
 
-    assert mock_log.error.called_with("The database instance is not initialized: None")
+    assert mock_log.error.called_with(
+        "The database instance is not initialized: None")

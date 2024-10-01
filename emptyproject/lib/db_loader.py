@@ -1,13 +1,38 @@
-from db.crud import CRUDRepository
-from shared import log, project
-from sqlalchemy.orm import Session
+"""
+db_loader.py
+This module provides the DatabaseLoader class, which contains methods for loading data from
+Excel files into a database. The class supports different types of databases, such as SQLite
+and Access, and includes functionality for loading data
+from multiple sheets and files, as well as handling post-processing tasks.
+Classes:
+    DatabaseLoader: A class that provides methods for loading data from Excel files
+    into a database.
+Exceptions:
+    SQLAlchemyError: Raised when there is an error with SQLAlchemy operations.
+    IOError: Raised when there is an input/output error.
+Functions:
+    __init__(self, db_type): Initializes the DatabaseLoader object with the specified
+    database type.
+    get_uri_str(self): Returns the appropriate database URI key based on the database type.
+    load_all_sheets(self, cls, xl_file, post_processing=None): Loads all data from all sheets
+    of an Excel file into the database.
+    load_data_from_file(self, cls, xl_file_pattern, table, post_processing=None): Loads data
+    from multiple Excel files matching a pattern into the database.
+    load_data(self, cls, xl_file, table, post_processing=None): Loads data from a single
+    Excel file into the database.
+"""
+
 import glob
 
+from db.crud import CRUDRepository
+from shared import log, project
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
 
-class DB_Loader():
+class DatabaseLoader():
     """
-    The DB_Loader class provides methods for loading data from Excel files into a database.
+    The DatabaseLoader class provides methods for loading data from Excel files into a database.
 
     Attributes:
         db_type (str): The type of database ('sqlite' or 'access').
@@ -15,7 +40,7 @@ class DB_Loader():
 
     def __init__(self, db_type):
         """
-        Initializes the DB_Loader object with the specified database type.
+        Initializes the DatabaseLoader object with the specified database type.
 
         Args:
             db_type (str): The type of database ('sqlite' or 'access').
@@ -40,7 +65,7 @@ class DB_Loader():
     def load_all_sheets(self, cls, xl_file, post_processing=None):
         """
         Loads all data from all sheets of an Excel file into the database.
-        It assumes that the sheet name is the same as the table name and 
+        It assumes that the sheet name is the same as the table name and
         they exits in the database.
 
         Args:
@@ -54,8 +79,13 @@ class DB_Loader():
         if post_processing:
             post_processing()
         log.info("%s Loaded.\n", xl_file)
-    
-    def load_data_from_file(self, cls, xl_file_pattern, table, post_processing=None):
+
+    def load_data_from_file(
+            self,
+            cls,
+            xl_file_pattern,
+            table,
+            post_processing=None):
         """
         Loads data from multiple Excel files matching a pattern into the database.
 
@@ -68,7 +98,6 @@ class DB_Loader():
         files = glob.glob(xl_file_pattern)
         for file in files:
             self.load_data(cls, file, table, post_processing)
-
 
     def load_data(self, cls, xl_file, table, post_processing=None):
         """
@@ -98,15 +127,13 @@ class DB_Loader():
                 CRUDRepository.create(db, new_entry)
 
             db.commit()
-        except Exception as e:
+        except (SQLAlchemyError, IOError) as e:
             db.rollback()
             log.error("Error inserting data: %s", e)
-        finally:    
+        finally:
             db.close()
 
         if post_processing:
             post_processing()
 
         log.info("%s Loaded.\n", xl_file)
-
-

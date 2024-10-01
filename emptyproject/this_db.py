@@ -12,15 +12,7 @@ Classes:
       related to casino period criterion values and cross-view information.
 
 Methods:
-    - __init__: Initializes the ThisDB class with a database connection URI.
-    - update_criterion_fk: Updates foreign keys for criteria in the
-      CriterionValues table.
-    - update_casino_fk: Updates foreign keys for casinos in the CriterionValues table.
-    - update_all_fk: Updates all foreign keys in the CriterionValues table.
-    - update_crossview_infos: Updates the CrossViewInfos table with resource strings in
-      the specified language.
-    - add_annual_computed_exclusions: Adds annual computed exclusions to the database.
-    - replace_ref: Replaces old criterion references with new ones.
+
 """
 
 # pylint: disable=too-few-public-methods
