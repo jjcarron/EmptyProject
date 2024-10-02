@@ -3,17 +3,11 @@ Unit tests for the empty_project module.
 
 This module contains unit tests for various functions and classes in the empty_project module.
 """
-
-"""
-Unit tests for the empty_project module.
-
-This module contains unit tests for various functions and classes in the empty_project module.
-"""
-
 import argparse
 from unittest.mock import patch
 
 import pytest
+from empty_project import set_project_database
 
 
 @pytest.fixture
@@ -33,6 +27,7 @@ def mock_arguments():
         excel_file='test.xlsx',
         debug=True
     )
+
 
 @pytest.fixture
 @patch('empty_project.project')
@@ -58,9 +53,7 @@ def test_set_project_database(
     mock_get_uri_str.return_value = 'sqlite:///test.db'
     mock_project.get_connection_uri.return_value = 'sqlite:///test.db'
 
-
     set_project_database(mock_args)
-
 
     mock_get_uri_str.assert_called_once_with('sqlite')
     mock_project.get_connection_uri.assert_called_once_with(
@@ -69,7 +62,6 @@ def test_set_project_database(
         'sqlite:///test.db')
     mock_thisdb.assert_called_once_with('sqlite:///test.db')
     mock_project.set_this_db.assert_called_once()
-
 
 
 @patch('empty_project.argparse.ArgumentParser.parse_args')

@@ -17,7 +17,6 @@ Tests:
 from unittest.mock import MagicMock
 
 import pytest
-
 from this_db import ThisDB  # Adjust according to your project structure
 
 
