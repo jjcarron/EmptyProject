@@ -54,6 +54,10 @@ dist/
 # Package files
 *.jar
 
+#caches
+.pytest_cache
+
+
 # Maven
 target/
 dist/
