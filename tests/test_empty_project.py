@@ -24,48 +24,20 @@ def mock_arguments():
     Returns:
         argparse.Namespace: A namespace object with mock arguments.
     """
-def mock_arguments():
-    """
-    Fixture to provide mock arguments for the tests.
-
-    Returns:
-        argparse.Namespace: A namespace object with mock arguments.
-    """
     return argparse.Namespace(
         command='create',
         database='test.db',
         database_type='sqlite',
-        language='en',
         language='en',
         operation='LB',
         excel_file='test.xlsx',
         debug=True
     )
 
-
-@pytest.fixture
-
 @pytest.fixture
 @patch('empty_project.project')
 @patch('empty_project.get_uri_str')
 @patch('empty_project.ThisDB')
-def test_set_project_database(
-        mock_thisdb,
-        mock_get_uri_str,
-        mock_project,
-        mock_args):
-    """
-    Test the set_project_database function.
-
-    Args:
-        mock_thisdb (MagicMock): Mock for ThisDB class.
-        mock_get_uri_str (MagicMock): Mock for get_uri_str function.
-        mock_project (MagicMock): Mock for project module.
-        mock_args (argparse.Namespace): Mock arguments.
-
-    Asserts:
-        The function calls the expected methods with the correct arguments.
-    """
 def test_set_project_database(
         mock_thisdb,
         mock_get_uri_str,
@@ -112,22 +84,10 @@ def test_main_create(
     Asserts:
         The function calls the expected methods with the correct arguments.
     """
-def test_main_create(
-        mock_parse_args):
-    """
-    Test the main function with the 'create' command.
-
-    Args:
-        mock_parse_args (MagicMock): Mock for ArgumentParser.parse_args method.
-
-    Asserts:
-        The function calls the expected methods with the correct arguments.
-    """
     mock_parse_args.return_value = argparse.Namespace(
         command='create',
         database='test.db',
         database_type='sqlite',
-        language='en',
         language='en',
         operation='LB',
         excel_file='test.xlsx',
