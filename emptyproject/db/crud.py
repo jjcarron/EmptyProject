@@ -14,6 +14,7 @@ Classes:
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
 
 from db.base import Base
+from sqlalchemy import inspect
 from sqlalchemy.orm import Session
 
 T = TypeVar('T', bound=Base)
@@ -36,6 +37,56 @@ class CRUDRepository(Generic[T]):
             model (Type[T]): The SQLAlchemy model class.
         """
         self.model = model
+
+    def has_unique_constraint(self) -> bool:
+        """
+        Checks if the model has any unique constraints.
+
+        Args:
+            model (Type[T]): The SQLAlchemy model class.
+
+        Returns:
+            bool: True if the model has unique constraints, False otherwise.
+        """
+        mapper = inspect(self.model)
+        for column in mapper.columns:
+            if column.unique:
+                return True
+        return False
+
+    def check_constraints(self, db: Session, new_entry: T) -> bool:
+        """
+        Checks if the new entry violates any constraints.
+
+        Args:
+            db (Session): The SQLAlchemy session.
+            new_entry (T): The new entry to be checked.
+
+        Returns:
+            bool: True if the entry does not violate any constraints, False otherwise.
+        """
+
+        # Check for unique constraints
+        if self.has_unique_constraint():
+            # Filter the attributes to only include those that are columns in
+            # the model
+            model_columns = {
+                column.name for column in inspect(
+                    self.model).columns}
+            entry_dict = {
+                k: v for k,
+                v in new_entry.__dict__.items() if k in model_columns}
+
+            existing_entry = db.query(
+                self.model).filter_by(
+                **entry_dict).first()
+            if existing_entry:
+                # The entry already exists in the database.
+                return False
+
+        # Add other constraint checks here
+
+        return True
 
     @classmethod
     def create(cls, db: Session, obj_in: T) -> T:

@@ -77,3 +77,19 @@ def test_delete(db_session):
     deleted_obj = repo.delete(db_session, SampleModel, created_obj.id)
     assert deleted_obj is not None
     assert repo.get(db_session, SampleModel, created_obj.id) is None
+
+    def test_check_constraints_unique(db_session):
+        repo = CRUDRepository(SampleModel)
+        new_obj1 = SampleModel(name="Unique name")
+        repo.create(db_session, new_obj1)
+
+        new_obj2 = SampleModel(name="Unique name")
+        assert not repo.check_constraints(db_session, new_obj2)
+
+    def test_check_constraints_no_violation(db_session):
+        repo = CRUDRepository(SampleModel)
+        new_obj1 = SampleModel(name="Unique name 1")
+        repo.create(db_session, new_obj1)
+
+        new_obj2 = SampleModel(name="Unique name 2")
+        assert repo.check_constraints(db_session, new_obj2)

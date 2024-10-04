@@ -303,9 +303,12 @@ def main():
     run_command("pytest", cwd=new_project_path)
 
     # k) Run pylint
-    print("Running pylint...")
+    print("Running pylint for the whole new project...")
+    print(f"pylint {new_project}")
     run_command(f"pylint {new_project}", cwd=new_project_path)
+    print("Running pylint for the tools directory...")
     run_command("pylint tools", cwd=new_project_path)
+    print("Running pylint for the tests directory...")
     run_command("pylint tests", cwd=new_project_path)
 
 

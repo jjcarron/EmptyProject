@@ -22,14 +22,16 @@ Functions:
     Excel file into the database.
 """
 
-import glob
+import re
 
 from db.crud import CRUDRepository
+from lib.utils import find_files_by_pattern
 from shared import log, project
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 
+# pylint
 class DatabaseLoader():
     """
     The DatabaseLoader class provides methods for loading data from Excel files into a database.
@@ -78,14 +80,19 @@ class DatabaseLoader():
         xl.load_data()
         if post_processing:
             post_processing()
+
         log.info("%s Loaded.\n", xl_file)
 
-    def load_data_from_file(
+    # pylint: disable=too-many-positional-arguments
+    def load_data_from_files(
             self,
             cls,
-            xl_file_pattern,
-            table,
-            post_processing=None):
+            tables,
+            path,
+            pattern,
+            recursive=False,
+            post_processing=None,
+    ):
         """
         Loads data from multiple Excel files matching a pattern into the database.
 
@@ -95,11 +102,20 @@ class DatabaseLoader():
             table (str): The database table to insert data into.
             post_processing (function, optional): A function to call after data is loaded.
         """
-        files = glob.glob(xl_file_pattern)
-        for file in files:
-            self.load_data(cls, file, table, post_processing)
+        files = find_files_by_pattern(path, pattern, recursive=recursive)
 
-    def load_data(self, cls, xl_file, table, post_processing=None):
+        for file in files:
+            match = re.match(pattern, file)
+            self.load_data(cls, tables, file, match, post_processing)
+
+    # pylint: disable=too-many-locals
+    def load_data(
+            self,
+            cls,
+            tables,
+            xl_file,
+            match=None,
+            post_processing=None):
         """
         Loads data from a single Excel file into the database.
 
@@ -116,16 +132,35 @@ class DatabaseLoader():
 
         try:
             # db_type = db.bind.dialect.name
-            xl = cls(xl_file)
-            data_to_insert = xl.load_data()
+            xl = cls(xl_file, match)
+            # Iterate over each table in the list of tables
+            for table in tables:
+                # Load data from the Excel file for the current table
+                data_to_insert = xl.load_data(table)
 
-            for data in data_to_insert:
-                table_class = this_db.get_table_class(table)
-                new_entry = table_class(**data)
-                if new_entry.Casino == 'Total':
-                    continue
-                CRUDRepository.create(db, new_entry)
+                # Process each entry in the data to insert
+                for data in data_to_insert:
+                    # Get the class corresponding to the current table
+                    table_class = this_db.get_table_class(table)
 
+                    # Filter out keys that are not attributes of the table
+                    # class
+                    valid_data = {
+                        k: v for k, v in data.items() if hasattr(
+                            table_class, k)}
+
+                    # Create a new database entry
+                    new_entry = table_class(**valid_data)
+
+                    # check for constraints
+                    crud_repo = CRUDRepository(table_class)
+                    if not crud_repo.check_constraints(db, new_entry):
+                        continue
+
+                    # Insert the new entry into the database
+                    CRUDRepository.create(db, new_entry)
+
+            # Commit the transaction after processing all tables
             db.commit()
         except (SQLAlchemyError, IOError) as e:
             db.rollback()

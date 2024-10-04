@@ -86,8 +86,8 @@ class ThisProject(Project):
         self.sqlite_db_file = self.get_path('sqlite_db_file')
         self.initial_data_file = self.get_path('initial_xl_data')
 
-        # Masks
-        self.input_file_mask = self.get_mask('input_file_mask')
+        # patterns
+        self.input_files_pattern = self.get_pattern('input_files_pattern')
 
         # Connection information
         self.access_conn_str = self.get_connection('access_conn_str')

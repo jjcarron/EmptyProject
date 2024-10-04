@@ -30,5 +30,6 @@
   "tests/test_this_db.py::test_update_all_fk": true,
   "tests/test_this_db.py::test_update_crossview_infos": true,
   "tests/test_this_db.py::test_add_annual_computed_exclusions": true,
-  "tests/test_this_db.py::test_replace_ref": true
+  "tests/test_this_db.py::test_replace_ref": true,
+  "tests/lib/test_db_loader.py::test_load_data_from_file": true
 }
