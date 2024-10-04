@@ -65,7 +65,7 @@ class Project(metaclass=SingletonMeta):
         path = self.config['project']['paths'].get(key)
         return self._resolve_path(self._replace_variables(path))
 
-    def get_mask(self, key):
+    def get_pattern(self, key):
         """
         Retrieves and resolves the path corresponding to a given key from the configuration.
 
@@ -75,8 +75,10 @@ class Project(metaclass=SingletonMeta):
         Returns:
             str: The resolved absolute path.
         """
-        mask = self.config['project']['masks'].get(key)
-        return mask
+
+        pattern = self.config['project']['patterns'].get(key)
+
+        return pattern
 
     def get_dir(self, key):
         """

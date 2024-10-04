@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from xl.xl import Xl
+from xl.xl_reader import XlReader
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def xl_instance(tmp_path):
     with pd.ExcelWriter(file_path) as writer:
         df1.to_excel(writer, sheet_name="Sheet1", index=False)
         df2.to_excel(writer, sheet_name="Sheet2", index=False)
-    return Xl(file_path)
+    return XlReader(file_path)
 
 
 def test_get_dataframe(xl_instance):

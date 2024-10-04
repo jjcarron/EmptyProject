@@ -34,11 +34,11 @@ project:
     sqlite_db_file: "[database]/Database.db"
     initial_xl_data: "[init]/Basic_Data.xlsx"
 
-  masks:
+  patterns:
     #regular expressions to retrieve information from the directory structure
     # \{year\} permet de definir l'année dans le programme
     #\{operation\}  permet de definir le type OL | LB dans le programme as example
-    input_files_mask: '^(\w+.+)[ -_]FO[ -_]MyForm[ -_]\{operation\}-\{year\}\.xlsx$'
+    input_files_pattern: '^(\w+.+)[ -_]FO[ -_]MyForm[ -_]\{operation\}-\{year\}\.xlsx$'
 
   connections:
     #Database connection information

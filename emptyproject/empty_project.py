@@ -29,7 +29,7 @@ from lib.db_loader import DatabaseLoader
 from lib.utils import get_uri_str
 from shared import check_path, dlog, log, project
 from this_db import ThisDB
-from xl.xl_initial_data import XlInitialData
+from xl.xl_clean_reader import XlCleanReader
 
 
 def set_project_database(args):
@@ -168,7 +168,7 @@ def main():
 
                 log.info("Database initialized.")
                 dbl = DatabaseLoader(this_db)
-                dbl.load_all_sheets(XlInitialData, project.initial_data_file)
+                dbl.load_all_sheets(XlCleanReader, project.initial_data_file)
 
                 # Load other data from Excel files here for example:
                 # dbl.load_data(OtherData, project.get_path('fichier'), 'Table')

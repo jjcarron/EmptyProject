@@ -11,7 +11,7 @@ import os
 
 from shared import log, project
 from this_db import ThisDB
-from xl.xl_initial_data import XlInitialData
+from xl.xl_clean_reader import XlCleanReader
 
 # pylint: disable=broad-exception-caught
 # pylint: disable=pointless-string-statement
@@ -121,7 +121,7 @@ def init_db_access():
             log.info("Database initialized.")
 
             xl_file = project.initial_data_file
-            load_initial_data(XlInitialData, xl_file)
+            load_initial_data(XlCleanReader, xl_file)
         except Exception as e:
             log.error(f"An error occurred: {e}")
 

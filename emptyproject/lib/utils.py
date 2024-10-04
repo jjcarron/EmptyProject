@@ -8,7 +8,32 @@ Functions:
 """
 # pylint: disable=duplicate-code
 
+import glob
+import os
 import re
+
+
+def find_files_by_pattern(path, pattern, recursive=False):
+    """
+    Find files in a specified directory that match the given pattern.
+
+    :param path: The directory path where to search for the files.
+    :param pattern: The pattern to search for, such as '*.py' or '*_test.py'.
+    :return: A list of matching file paths.
+    """
+    # Ensure path ends with a slash (if necessary)
+    if not path.endswith(os.sep):
+        path += os.sep
+
+    # Use glob to get all .xlsx files in the directory
+    files = glob.glob(os.path.join(path, '**'), recursive=recursive)
+
+    # Now filter the files with your regex pattern
+    matching_files = [
+        f for f in files if re.search(
+            pattern, os.path.basename(f))]
+
+    return matching_files
 
 
 def create_short_name(input_string):

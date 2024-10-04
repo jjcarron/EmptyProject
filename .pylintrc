@@ -1,5 +1,5 @@
 [MASTER]
-init-hook='import sys; sys.path.append("emptyproject"); 
+init-hook='import sys; sys.path.append("emptyproject"); sys.path.append("tools"); 
 
 const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 
@@ -295,7 +295,7 @@ exclude-too-few-public-methods=
 ignored-parents=
 
 # Maximum number of arguments for function / method.
-max-args=5
+max-args=75
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes=7
