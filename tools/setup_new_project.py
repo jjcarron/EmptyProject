@@ -200,6 +200,27 @@ def run_command(command, cwd=None):
         sys.exit(1)
 
 
+def remove_pycache_and_pyc_files(project_dir):
+    """
+    Remove all __pycache__ directories and .pyc files in the given project directory.
+
+    :param project_dir: The root directory of the project.
+    """
+    for root, dirs, files in os.walk(project_dir):
+        # Remove __pycache__ directories
+        if '__pycache__' in dirs:
+            pycache_dir = os.path.join(root, '__pycache__')
+            print(f"Removing {pycache_dir}")
+            shutil.rmtree(pycache_dir)
+
+        # Remove .pyc files
+        for file in files:
+            if file.endswith('.pyc'):
+                pyc_file = os.path.join(root, file)
+                print(f"Removing {pyc_file}")
+                os.remove(pyc_file)
+
+
 def main():
     """
     Main function that orchestrates the project creation process by performing all the
@@ -231,11 +252,14 @@ def main():
         f"Creating new project '{new_project_name}' at {new_project_path}...")
     copy_project_template(empty_project_path, new_project_path)
 
-    # a) Remove the .git directory if it exists
+    # a) Remove the compiled files if it exists
+    remove_pycache_and_pyc_files(new_project_path)
+
+    # b) Remove the .git directory if it exists
     git_dir = os.path.join(new_project_path, ".git")
     remove_dir(git_dir)
 
-    # b) Replace 'emptyproject' with newproject in .pylintrc
+    # c) Replace 'emptyproject' with newproject in .pylintrc
     replace_in_file(
         os.path.join(
             new_project_path,
@@ -243,7 +267,7 @@ def main():
         "emptyproject",
         new_project)
 
-    # b) Replace 'empty_project' with new_project in
+    # d) Replace 'empty_project' with new_project in
     # tests/test_empty_project.py
     module_name = snakecase(new_project_name)
     replace_in_file(
@@ -253,7 +277,7 @@ def main():
         "empty_project",
         module_name)
 
-    # c) Replace 'emptyproject' with newproject in pytest.ini
+    # e) Replace 'emptyproject' with newproject in pytest.ini
     replace_in_file(
         os.path.join(
             new_project_path,
@@ -261,13 +285,13 @@ def main():
         "emptyproject",
         new_project)
 
-    # d) Replace 'EmptyProject' with the newProjectName in
+    # f) Replace 'EmptyProject' with the newProjectName in
     #    config/project_config.yaml
     replace_in_file(os.path.join(
         new_project_path, "emptyproject", "config", "project_config.yaml"),
         "EmptyProject", new_project_name)
 
-    # e) Modify the Excel file for APP_NAME in the ResourceStrings sheet
+    # g) Modify the Excel file for APP_NAME in the ResourceStrings sheet
     basic_data_path = os.path.join(
         new_project_path,
         "data",
@@ -281,35 +305,35 @@ def main():
 
     old_project_dir = os.path.join(new_project_path, "emptyproject")
 
-    # f) Rename the main file to newproject (lowercase)
+    # h) Rename the main file to newproject (lowercase)
     rename_empty_project_files(old_project_dir, new_project_name)
 
-    # g) Rename the directory emptyproject to newproject (lowercase)
+    # i) Rename the directory emptyproject to newproject (lowercase)
     new_project_dir = os.path.join(new_project_path, new_project)
     os.rename(old_project_dir, new_project_dir)
 
-    # h) Initialize a new Git repository
+    # j) Initialize a new Git repository
     print("Initializing new git repository...")
     run_command("git init", cwd=new_project_path)
     run_command("git add .", cwd=new_project_path)
     run_command('git commit -m "Initial commit"', cwd=new_project_path)
 
-    # i) Remove the .pytest_cache directory if it exists
+    # k) Remove the .pytest_cache directory if it exists
     pytest_cache_dir = os.path.join(new_project_path, ".pytest_cache")
     remove_dir(pytest_cache_dir)
 
-    # j) Run pytest
+    # l) Run pytest
     print("Running pytest...")
     run_command("pytest", cwd=new_project_path)
 
-    # k) Run pylint
+    # m) Run pylint
     print("Running pylint for the whole new project...")
     print(f"pylint {new_project}")
-    run_command(f"pylint {new_project}", cwd=new_project_path)
+    run_command(f"python -m pylint {new_project}", cwd=new_project_path)
     print("Running pylint for the tools directory...")
-    run_command("pylint tools", cwd=new_project_path)
+    run_command("python -m pylint tools", cwd=new_project_path)
     print("Running pylint for the tests directory...")
-    run_command("pylint tests", cwd=new_project_path)
+    run_command("python -m pylint tests", cwd=new_project_path)
 
 
 if __name__ == "__main__":

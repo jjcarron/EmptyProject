@@ -83,7 +83,6 @@ class DatabaseLoader():
 
         log.info("%s Loaded.\n", xl_file)
 
-    # pylint: disable=too-many-positional-arguments
     def load_data_from_files(
             self,
             cls,
