@@ -31,38 +31,22 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 
-# pylint
 class DatabaseLoader():
     """
     The DatabaseLoader class provides methods for loading data from Excel files into a database.
 
     Attributes:
-        db_type (str): The type of database ('sqlite' or 'access').
+        database: The database used
     """
 
-    def __init__(self, db_type):
+    def __init__(self, database):
         """
         Initializes the DatabaseLoader object with the specified database type.
 
         Args:
-            db_type (str): The type of database ('sqlite' or 'access').
+            db: Database
         """
-        self.db_type = db_type
-
-    def get_uri_str(self):
-        """
-        Returns the appropriate database URI key based on the database type.
-
-        Returns:
-            str: The corresponding URI key.
-        """
-        match self.db_type:
-            case 'sqlite':
-                return 'sqlite_uri'
-            case 'access':
-                return 'access_uri'
-            case _:
-                return None
+        self.database = database
 
     def load_all_sheets(self, cls, xl_file, post_processing=None):
         """
@@ -83,6 +67,7 @@ class DatabaseLoader():
 
         log.info("%s Loaded.\n", xl_file)
 
+    # pylint: disable=too-many-positional-arguments
     def load_data_from_files(
             self,
             cls,

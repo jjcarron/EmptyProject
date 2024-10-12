@@ -252,14 +252,14 @@ def main():
         f"Creating new project '{new_project_name}' at {new_project_path}...")
     copy_project_template(empty_project_path, new_project_path)
 
-    # a) Remove the compiled files if it exists
-    remove_pycache_and_pyc_files(new_project_path)
+    # Remove unnecessary files
+    remove_pycache_and_pyc_files(new_project_path)  # New function call
 
-    # b) Remove the .git directory if it exists
+    # a) Remove the .git directory if it exists
     git_dir = os.path.join(new_project_path, ".git")
     remove_dir(git_dir)
 
-    # c) Replace 'emptyproject' with newproject in .pylintrc
+    # b) Replace 'emptyproject' with newproject in .pylintrc
     replace_in_file(
         os.path.join(
             new_project_path,
@@ -267,7 +267,7 @@ def main():
         "emptyproject",
         new_project)
 
-    # d) Replace 'empty_project' with new_project in
+    # b) Replace 'empty_project' with new_project in
     # tests/test_empty_project.py
     module_name = snakecase(new_project_name)
     replace_in_file(
@@ -277,7 +277,7 @@ def main():
         "empty_project",
         module_name)
 
-    # e) Replace 'emptyproject' with newproject in pytest.ini
+    # c) Replace 'emptyproject' with newproject in pytest.ini
     replace_in_file(
         os.path.join(
             new_project_path,
@@ -285,13 +285,13 @@ def main():
         "emptyproject",
         new_project)
 
-    # f) Replace 'EmptyProject' with the newProjectName in
+    # d) Replace 'EmptyProject' with the newProjectName in
     #    config/project_config.yaml
     replace_in_file(os.path.join(
         new_project_path, "emptyproject", "config", "project_config.yaml"),
         "EmptyProject", new_project_name)
 
-    # g) Modify the Excel file for APP_NAME in the ResourceStrings sheet
+    # e) Modify the Excel file for APP_NAME in the ResourceStrings sheet
     basic_data_path = os.path.join(
         new_project_path,
         "data",
@@ -305,28 +305,28 @@ def main():
 
     old_project_dir = os.path.join(new_project_path, "emptyproject")
 
-    # h) Rename the main file to newproject (lowercase)
+    # f) Rename the main file to newproject (lowercase)
     rename_empty_project_files(old_project_dir, new_project_name)
 
-    # i) Rename the directory emptyproject to newproject (lowercase)
+    # g) Rename the directory emptyproject to newproject (lowercase)
     new_project_dir = os.path.join(new_project_path, new_project)
     os.rename(old_project_dir, new_project_dir)
 
-    # j) Initialize a new Git repository
+    # h) Initialize a new Git repository
     print("Initializing new git repository...")
     run_command("git init", cwd=new_project_path)
     run_command("git add .", cwd=new_project_path)
     run_command('git commit -m "Initial commit"', cwd=new_project_path)
 
-    # k) Remove the .pytest_cache directory if it exists
+    # i) Remove the .pytest_cache directory if it exists
     pytest_cache_dir = os.path.join(new_project_path, ".pytest_cache")
     remove_dir(pytest_cache_dir)
 
-    # l) Run pytest
+    # j) Run pytest
     print("Running pytest...")
     run_command("pytest", cwd=new_project_path)
 
-    # m) Run pylint
+    # k) Run pylint
     print("Running pylint for the whole new project...")
     print(f"pylint {new_project}")
     run_command(f"python -m pylint {new_project}", cwd=new_project_path)

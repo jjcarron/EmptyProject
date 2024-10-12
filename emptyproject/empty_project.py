@@ -156,17 +156,16 @@ def main():
     _ = language
 
     set_project_database(args)
+    this_db = project.get_this_db()
+    if this_db is None:
+        log.error("Database initialization failed.")
+
     match args.command:
         case 'create':
-            set_project_database(args)
             try:
-                this_db = project.get_this_db()
                 this_db.init_db(drop_all=True)
-
-                if this_db is None:
-                    log.error("Database initialization failed.")
-
                 log.info("Database initialized.")
+
                 dbl = DatabaseLoader(this_db)
                 dbl.load_all_sheets(XlCleanReader, project.initial_data_file)
 
@@ -177,11 +176,38 @@ def main():
                 log.error("An error occurred: %s", e)
             finally:
                 sys.exit()
+
         case 'load':
-            print("Load command is not defined yet.")
+            dbl = DatabaseLoader(this_db)
+            pattern = project.input_files_pattern
+            log.info("Not implemented yet")
+            # Replace {something} with the actual year value
+            # pattern = project.input_files_pattern
+            # pattern = pattern.replace('{something}', 'myValue')
+            """
+            Example :
+            # Replace {year} with four digits
+            # pattern = pattern.replace('{year}', r'\\d{4}')
+
+                dbl.load_data_from_files(XlSimpleFile, tables=['TableA', 'TableB'],
+                    path=project.input_dir, pattern=pattern,
+                    post_processing=None, recursive=True)
+                this_db.update_sentences_category_fk()
+            or:
+                post_processing=this_db.update_sentences_category_fk)
+                log.info("Data loaded successfully.")
+            then confirm
+                log.info("Data loaded successfully.")
+            """
             sys.exit()
+
         case 'export':
-            print("Load command is not defined yet.")
+            log.info("Not implemented yet")
+            """
+            Example:
+                dbe = DatabaseExporter(this_db, os.path.join(project.output_dir, 'Test.xlsx'))
+                dbe.export_tables(['TableA', 'TableB'])
+            """
             sys.exit()
 
 
