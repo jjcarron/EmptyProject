@@ -31,7 +31,6 @@ from shared import check_path, dlog, log, project
 from this_db import ThisDB
 from xl.xl_clean_reader import XlCleanReader
 
-
 def set_project_database(args):
     """
     Connects to the database based on the provided arguments.
@@ -180,6 +179,7 @@ def main():
         case 'load':
             dbl = DatabaseLoader(this_db)
             pattern = project.input_files_pattern
+            _ = pattern
             log.info("Not implemented yet")
             # Replace {something} with the actual year value
             # pattern = project.input_files_pattern

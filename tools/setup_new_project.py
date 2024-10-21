@@ -324,7 +324,7 @@ def main():
 
     # j) Run pytest
     print("Running pytest...")
-    run_command("pytest", cwd=new_project_path)
+    run_command("python -m pytest", cwd=new_project_path)
 
     # k) Run pylint
     print("Running pylint for the whole new project...")

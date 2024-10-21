@@ -122,7 +122,6 @@ class CoreDB(Database):
             settings = db.query(Settings).all()
             return settings
         except Exception as e:
-            db.rollback()
             log.error("An error occurred while fetching settings: %s", e)
             return []
         finally:
@@ -140,7 +139,6 @@ class CoreDB(Database):
             resource_strings = db.query(ResourceStrings).all()
             return resource_strings
         except Exception as e:
-            db.rollback()
             log.error(
                 "An error occurred while fetching resource strings: %s", e
             )
@@ -197,6 +195,26 @@ class CoreDB(Database):
             db.rollback()
             log.error(
                 "An error occurred while fetching the resource string: %s", e)
+            return []
+        finally:
+            db.close()
+
+    def get_all(self, table):
+        """
+        Retrieves all the element of a table from the database.
+
+        Returns:
+            list: A list of all Table objects.
+        """
+        db: Session = self.get_session()
+        obj = self.get_table_class(table)
+        try:
+            object_list = db.query(obj).all()
+            return object_list
+        except Exception as e:
+            log.error(
+                "An error occurred while fetching table: %s", e
+            )
             return []
         finally:
             db.close()

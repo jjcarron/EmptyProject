@@ -31,7 +31,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 
-class DatabaseLoader():
+class DatabaseLoader:
     """
     The DatabaseLoader class provides methods for loading data from Excel files into a database.
 
@@ -67,15 +67,15 @@ class DatabaseLoader():
 
         log.info("%s Loaded.\n", xl_file)
 
-    # pylint: disable=too-many-positional-arguments
+    # pylint: disable=too-many-arguments
     def load_data_from_files(
-            self,
-            cls,
-            tables,
-            path,
-            pattern,
-            recursive=False,
-            post_processing=None,
+        self,
+        cls,
+        tables,
+        path,
+        pattern,
+        recursive=False,
+        post_processing=None,
     ):
         """
         Loads data from multiple Excel files matching a pattern into the database.

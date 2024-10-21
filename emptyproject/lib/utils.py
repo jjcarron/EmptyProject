@@ -12,6 +12,8 @@ import glob
 import os
 import re
 
+import pandas as pd
+
 
 def find_files_by_pattern(path, pattern, recursive=False):
     """
@@ -97,3 +99,23 @@ def get_uri_str(db_type):
             return 'access_uri'
         case _:
             return None
+
+
+def get_df_from_slqalchemy_objectlist(objlist):
+    """
+    Converts a list of SQLAlchemy objects to a DataFrame.
+
+    Args:
+        objlist (list): A list of SQLAlchemy objects.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the data from the SQLAlchemy objects.
+    """
+    if objlist:
+        data = [item.__dict__ for item in objlist]
+        for row in data:
+            row.pop('_sa_instance_state', None)
+
+        return pd.DataFrame([obj.__dict__ for obj in objlist])
+
+    return None
