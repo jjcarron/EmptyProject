@@ -1,10 +1,10 @@
 
 # Workshop du 23.10.2024 #
-*Prérequis*
+*A. Préparation*
 1. Installation de Python
 2. Création de l'environnment
 ***
-*Utilisation du projet de référence*
+*B. Utilisation du projet de référence*
 1.	Création d'un projet vide basé sur le modèle
 2.	Adaptation de la configuration
 3.	Extension du modèle de données
@@ -16,11 +16,12 @@
 9.	Extension du modèle de données pour créer des pivots automatisés
 10.	Export de pivots automatisés avec des graphiques
 ***
-### 1. Installation de Python ###
-Portail clients SPT de l'OFIT (https://myaps.bit.admin.ch/web/user/software-kiosk/assigned) 
-GPL Python 3.11.2150.0	| Couche 3B	|Installation SCCM
+# A. Préparation #
+## 1. Installation de Python ##
+    Portail clients SPT de l'OFIT (https://myaps.bit.admin.ch/web/user/software-kiosk/assigned) 
+    GPL Python 3.11.2150.0	| Couche 3B	|Installation SCCM
 
-### 2. Création de l'environnment ###
+## 2. Création de l'environnment ##
 dans un terminal Powershell (PS)
 1. Exécuter 
    ```ps
@@ -51,16 +52,19 @@ Hint: votre profile powershell a été adapté
    ```ps
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
    ```
-
-### 4. Création du projet ###
+# B. Utilisation du projet de référence #
+## 1. Création d'un projet vide basé sur le modèle ##
+### a. Adaptation de l'environnement powershell ###
    ```ps
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
    ```
+### b. Setup ###
     ```ps
     PS C:\Work> cd .\EmptyProject\
     PS C:\Work\EmptyProject> venv
     (myenv) PS C:\Work\EmptyProject> python .\tools\setup_new_project.py
     ```
+    
     
     ```PS
     Enter the new project name: SimpleProject
@@ -69,7 +73,8 @@ Hint: votre profile powershell a été adapté
    ```
     Hint: Le git a été initialisé
     
-### 5. Examen des fichiers  ###
+### b. Examen des fichiers  ###
+
 ```PS
 (myenv) PS C:\Work\EmptyProject> cd ..\SimpleProject\
 (myenv) PS C:\Work\SimpleProject> tree -f
