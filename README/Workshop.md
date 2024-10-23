@@ -59,21 +59,19 @@ Hint: votre profile powershell a été adapté
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
    ```
 ### b. Setup ###
-    ```ps
+```ps
     PS C:\Work> cd .\EmptyProject\
     PS C:\Work\EmptyProject> venv
     (myenv) PS C:\Work\EmptyProject> python .\tools\setup_new_project.py
-    ```
-    
-    
-    ```PS
+```
+```PS
     Enter the new project name: SimpleProject
     Enter the project path (default: C:\Work): SimpleProject
     Creating new project 'SimpleProject' at C:\Work\SimpleProject...
-   ```
+```
     Hint: Le git a été initialisé
     
-### b. Examen des fichiers  ###
+### c. Examen des fichiers  ###
 
 ```PS
 (myenv) PS C:\Work\EmptyProject> cd ..\SimpleProject\
@@ -195,7 +193,56 @@ Hint: votre profile powershell a été adapté
             CheckAgainstRefs.ps1
             pyclean.ps1
             sqlite_create_and_export.ps1
-    
+```
+
+## 2.	Adaptation de la configuration ##
+Explication du contenu du fichier (à compléter)
+## 3.	Extension du modèle de données ##
+Fichier : Simple_File.xlsx
+contenu : deux tables
+`` Sentences (sentence, category_key, sequence_number,category_fk) ``
+`` Categories (key, category) ``
+
+Ajouter à db\models.json
+```json
+        "Sentences": {
+            "id": { "type": "Integer", "primary_key": true },
+            "category_key": { "type": "String" },
+            "category_fk": { "type": "String" },
+            "sentence": { "type": "String" },
+            "year": { "type": "Integer" }
+        },
+        "Categories": {
+            "id": { "type": "Integer", "primary_key": true },
+            "key": { "type": "String", "unique": true },
+            "category": { "type": "String" }
+        },
+```
+Exécuter:
+```PS
+python .\tools\json_2_classes.py .\simpleproject\db\models.json .\simpleproject\db\models.py
+```
+## 4.	Génération de la base de donnée ##
+```PS
+python .\simpleproject\simple_project.py create
+ou
+python .\simpleproject\simple_project.py create -db_type access
+```
+Vérification de la base de données
+Exécuter dans une fenêtre séparée
+```PS
+sqlite_bro 
+```
+puis ouvrir la base de données C:\Work\SimpleProject\data\db\Database.db
+ou 
+aller dans le répertoire  C:\Work\SimpleProject\data\db\
+et double-cliquer Database.accdb
+## 5.	Création d'un module d'import spécifique ##
+## 6.	Création d'export simples ##
+## 7.	Extension du modèle de données pour créer des pivots ##
+## 8.	Export de pivot explicite avec des graphiques ##
+## 9.	Extension du modèle de données pour créer des pivots automatisés ##
+## 10.	Export de pivots automatisés avec des graphiques  ##  
     
     
     
