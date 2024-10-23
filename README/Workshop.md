@@ -238,6 +238,26 @@ ou
 aller dans le répertoire  C:\Work\SimpleProject\data\db\
 et double-cliquer Database.accdb
 ## 5.	Création d'un module d'import spécifique ##
+### a. variante simple pour un fichier propre ###
+ajouter 
+```PS
+import os
+....
+# dans case "create" ajouter
+dbl.load_all_sheets(
+    XlCleanReader, os.path.join(project.input_dir, "Simple_File.xlsx")
+)
+```
+Vérifier votre base de donnée
+### b. variante pour un import multiple avec un module d'import adapté ###
+Créer des données
+Copier le fichier generate_altered_data.py dans simpleproject
+```python
+from generate_altered_data import generate_data_from_template
+...
+
+
+```
 ## 6.	Création d'export simples ##
 ## 7.	Extension du modèle de données pour créer des pivots ##
 ## 8.	Export de pivot explicite avec des graphiques ##
