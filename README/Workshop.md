@@ -1,7 +1,22 @@
 
 # Workshop du 23.10.2024 #
-**Utilisation du projet de référence**
-### 1. Installation de Python 
+*Prérequis*
+1. Installation de Python
+2. Création de l'environnment
+***
+*Utilisation du projet de référence*
+1.	Création d'un projet vide basé sur le modèle
+2.	Adaptation de la configuration
+3.	Extension du modèle de données
+4.	Génération de la base de donnée
+5.	Création d'un module d'import spécifique
+6.	Création d'export simples
+7.	Extension du modèle de données pour créer des pivots
+8.	Export de pivot explicite avec des graphiques
+9.	Extension du modèle de données pour créer des pivots automatisés
+10.	Export de pivots automatisés avec des graphiques
+***
+### 1. Installation de Python ###
 Portail clients SPT de l'OFIT (https://myaps.bit.admin.ch/web/user/software-kiosk/assigned) 
 GPL Python 3.11.2150.0	| Couche 3B	|Installation SCCM
 
@@ -17,7 +32,6 @@ dans un terminal Powershell (PS)
    PS C:\Users\Uxxxxxxxx> venv
    (myenv) PS C:\Users\U80750753>
    ```
-
 3. Travailler
   ......
 4. Désactiver avec la commande
@@ -38,7 +52,7 @@ Hint: votre profile powershell a été adapté
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
    ```
 
-### 4. Création du projet
+### 4. Création du projet ###
    ```ps
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
    ```
@@ -55,7 +69,7 @@ Hint: votre profile powershell a été adapté
    ```
     Hint: Le git a été initialisé
     
-### 5. Examen des fichiers
+### 5. Examen des fichiers  ###
 ```PS
 (myenv) PS C:\Work\EmptyProject> cd ..\SimpleProject\
 (myenv) PS C:\Work\SimpleProject> tree -f
