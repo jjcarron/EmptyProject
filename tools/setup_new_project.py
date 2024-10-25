@@ -267,7 +267,7 @@ def main():
         "emptyproject",
         new_project)
 
-    # b) Replace 'empty_project' with new_project in
+    # c) Replace 'empty_project' with new_project in
     # tests/test_empty_project.py
     module_name = snakecase(new_project_name)
     replace_in_file(
@@ -277,7 +277,7 @@ def main():
         "empty_project",
         module_name)
 
-    # c) Replace 'emptyproject' with newproject in pytest.ini
+    # dc) Replace 'emptyproject' with newproject in pytest.ini
     replace_in_file(
         os.path.join(
             new_project_path,
@@ -285,13 +285,13 @@ def main():
         "emptyproject",
         new_project)
 
-    # d) Replace 'EmptyProject' with the newProjectName in
+    # e) Replace 'EmptyProject' with the newProjectName in
     #    config/project_config.yaml
     replace_in_file(os.path.join(
         new_project_path, "emptyproject", "config", "project_config.yaml"),
         "EmptyProject", new_project_name)
 
-    # e) Modify the Excel file for APP_NAME in the ResourceStrings sheet
+    # f) Modify the Excel file for APP_NAME in the ResourceStrings sheet
     basic_data_path = os.path.join(
         new_project_path,
         "data",
@@ -305,28 +305,28 @@ def main():
 
     old_project_dir = os.path.join(new_project_path, "emptyproject")
 
-    # f) Rename the main file to newproject (lowercase)
+    # g) Rename the main file to newproject (lowercase)
     rename_empty_project_files(old_project_dir, new_project_name)
 
-    # g) Rename the directory emptyproject to newproject (lowercase)
+    # h) Rename the directory emptyproject to newproject (lowercase)
     new_project_dir = os.path.join(new_project_path, new_project)
     os.rename(old_project_dir, new_project_dir)
 
-    # h) Initialize a new Git repository
+    # i) Initialize a new Git repository
     print("Initializing new git repository...")
     run_command("git init", cwd=new_project_path)
     run_command("git add .", cwd=new_project_path)
     run_command('git commit -m "Initial commit"', cwd=new_project_path)
 
-    # i) Remove the .pytest_cache directory if it exists
+    # j) Remove the .pytest_cache directory if it exists
     pytest_cache_dir = os.path.join(new_project_path, ".pytest_cache")
     remove_dir(pytest_cache_dir)
 
-    # j) Run pytest
+    # k) Run pytest
     print("Running pytest...")
     run_command("python -m pytest", cwd=new_project_path)
 
-    # k) Run pylint
+    # l) Run pylint
     print("Running pylint for the whole new project...")
     print(f"pylint {new_project}")
     run_command(f"python -m pylint {new_project}", cwd=new_project_path)
