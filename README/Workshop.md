@@ -372,6 +372,8 @@ def handle_export(this_db):
 ``` 
 utlisation d'un exportateur spécifique
 ```python
+from this_exporter import ThisExporter
+...
 from lib.db_exporter import DatabaseExporter
     # Using ThisExporter for a customized export
     customized_db_exporter_test_file = os.path.join(
@@ -380,9 +382,134 @@ from lib.db_exporter import DatabaseExporter
     with ThisExporter(this_db, customized_db_exporter_test_file) as cdbe:
         cdbe.export_all()
 ```
-        
 ## 7.	Extension du modèle de données pour créer des pivots ##
+### Définir dans le fichier de données basic_data.XLSX  ###
+une table de critères d'évaluation de ses données (Criteria)
+
+| key  | definition           |
+|------|----------------------|
+| C_1  | Number of Letters     |
+| C_2  | Number of Letter_A    |
+| C_3  | Number of words       |
+
+les pivots souhaités (PivotInfos)
+| query_name        | formula           | draw_rows | draw_total | draw_delta |
+|-------------------|-------------------|-----------|------------|------------|
+| number_of_letters | C_1               | VRAI      | VRAI       | VRAI       |
+| number_of_words   | C_3               | VRAI      | VRAI       | FAUX       |
+| number_of_a       | C_2               | VRAI      | VRAI       | FAUX       |
+| aA_percentage     | C_2 / C_1 * 100   | VRAI      | FAUX       | FAUX       |
+La colonne formula permet de définir des formules mathématique simple sur les critères. (+, -, *, / ainsi que la notation des puissance de 10 sous la forme 1E4 pour 10'000) 
+### Compléter le fichier de définition de la base de données (models.json) ### 
+```json
+        "Criteria": {
+            "id": { "type": "Integer", "primary_key": true },
+            "key": { "type": "String" },
+            "definition": { "type": "String" },
+            "comment": { "type": "String" }
+        },
+        "CriterionValues": {
+            "id": { "type": "Integer", "primary_key": true },
+            "dimension_1": { "type": "String" },
+            "dimension_2": { "type": "String" },
+            "criterion_key": { "type": "String" },
+            "numeric_value": { "type": "Float" },
+            "text_value": { "type": "String" }
+        },
+        "PivotInfos": {
+            "id": { "type": "Integer", "primary_key": true },
+            "query_name": { "type": "String" },
+            "title": { "type": "String" },
+            "x_name": { "type": "String" },
+            "y_name": { "type": "String" },
+            "sheet_prefix": { "type": "String" },
+            "formula": { "type": "String" },
+            "draw_rows": { "type": "Boolean" },
+            "draw_total": { "type": "Boolean" },
+            "draw_delta": { "type": "Boolean" }
+        }
+```
+Mettre à jour le fichier `models.py`. avec l'outils `json_2_classes.py`
+### Créer un import explicite pour l'importation des critère dans la base de données ###
+exemple:
+```python
+   def load_data(self, tables):
+        """
+        Load and process data from the 'Sentences' sheet in the Excel file.
+
+        This method reads data from the 'Sentences' sheet, processes the data,
+        and prepares it for insertion into a table with columns: dimension_1, dimension_2,
+        criterion_key, numeric_value, and text_value.
+
+        Returns:
+            list: A list of dictionaries representing the processed data.
+        """
+        _ = tables  # not used in this case
+        df = self.get_dataframe("Sentences")
+        df = self.cleanup_df(df)
+
+        data = []
+        try:
+            for index, row in df.iterrows():
+                sentence = row["sentence"]
+                sentence = sentence[:-32]
+                category_key = row["category_key"]
+
+                # Calculate numeric values based on the sentence
+                # Number of letters in the sentence
+                num_letters = len(sentence)
+                num_a = sum(
+                    1 for char in sentence if char.lower() == "a"
+                )  # Number of 'a' or 'A'
+                # Number of words in the sentence
+                num_words = len(sentence.split())
+
+                # Prepare entries for each criterion
+                criteria = [
+                    {"criterion_key": "C_1", "numeric_value": num_letters},
+                    {"criterion_key": "C_2", "numeric_value": num_a},
+                    {"criterion_key": "C_3", "numeric_value": num_words},
+                ]
+
+                # Populate new entries for each criterion
+                for criterion in criteria:
+                    new_entry = {
+                        "dimension_1": f"S_{(index + 1):02}",
+                        "dimension_2": category_key,
+                        "criterion_key": criterion["criterion_key"],
+                        "numeric_value": criterion["numeric_value"],
+                        "text_value": sentence,
+                    }
+                    data.append(new_entry)
+
+        except KeyError as e:
+            print(f"KeyError: {e} not found in the row")
+
+        return data
+```
 ## 8.	Export de pivot explicite avec des graphiques ##
+```python
+   def export_generated_pivots(self):
+        """
+        process formulas from pivot_information_df and create
+        pivot tables
+
+        """
+        pivot_information_df = get_df_from_slqalchemy_objectlist(
+            self.database.get_all("PivotInfos")
+        )
+        self.writer.add_index_sheet(pivot_information_df)
+        data_df = get_df_from_slqalchemy_objectlist(
+            self.database.get_all("CriterionValues")
+        )
+
+        # check for duplicates
+        duplicated_rows = data_df[data_df.duplicated(
+            subset=["criterion_key", "dimension_1", "dimension_2"], keep=False)]
+        # dimension_1 = columns, dimension_2 = rows
+        data_df.columns = data_df.columns.str.strip()
+        self.writer.create_pivot_tables(data_df, pivot_information_df)
+```
 ## 9.	Extension du modèle de données pour créer des pivots automatisés ##
 ## 10.	Export de pivots automatisés avec des graphiques  ##  
     
