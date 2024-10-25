@@ -1,1 +1,146 @@
+Instructions à ChatGPT pour la création d'un script:
+====================================================
 
+EMPTYPROJECT
+│   .gitignore
+│   .pylintrc
+│   pytest.ini
+│   README.md
+│   requirements.txt
+│   requirements_pro.txt
+│   setup.py
+│
+├───data
+│   ├───db
+│   │       EmptyProj.accdb
+│   │       EmptyProj.db
+│   │
+│   ├───init_data
+│   │       Basic_Data.xlsx
+│   │
+│   ├───input
+│   ├───log
+│   ├───output
+│   ├───references
+│   └───templates
+├───docs
+├───emptyproject
+│   │   empty_project.py
+│   │   shared.py
+│   │   this_db.py
+│   │   this_project.py
+│   │   __init__.py
+│   │
+│   ├───config
+│   │       logging_config.yaml
+│   │       project_config.yaml
+│   │
+│   ├───db
+│   │       base.py
+│   │       core_db.py
+│   │       crud.py
+│   │       db.py
+│   │       models.json
+│   │       models.py
+│   │       sqlalchemy_extensions.py
+│   │       __init__.py
+│   │
+│   ├───lib
+│   │       logger.py
+│   │       pd_version_dependent_code_example.py
+│   │       project.py
+│   │       singleton_meta.py
+│   │       utils.py
+│   │       __init__.py
+│   │
+│   └───xl
+│           xl.py
+│           xl_initial_data.py
+│           __init__.py
+│
+├───msaccess_code
+│   ├───db
+│   ├───dbDefs
+│   ├───dbInitData
+│   └───docs
+├───tests
+│   │   conftest.py
+│   │   test_shared.py
+│   │   test_this_project.py
+│   │   __init__.py
+│   │
+│   ├───config
+│   ├───db
+│   ├───lib
+│   │       test_logger.py
+│   │       test_utils.py
+│   │
+│   └───xl
+└───tools
+    │   compare_excel_result.py
+    │   graph_test.py
+    │   graph_test2.py
+    │   json_2_classes.py
+    │   process.py
+    │   remove_trailing_whitespaces.py
+    │   tabledefs_2_json.py
+    │
+    ├───lib
+    │       db_class_generator.py
+    │       easy_definition.py
+    │
+    └───powershell
+            access_create_and_export.ps1
+            CheckAgainstRefs.ps1
+            pyclean.ps1
+            sqlite_create_and_export.ps1
+
+
+La structure de répertoire ci-dessus représente un modèle de projet nommé EmptyProject. Il sera utilisé pour créer de nouveaux projets. 
+
+Donne-moi un script python qui sera pacé dans le sous répertoire tools du projet. 
+
+Fonctionnalités:
+1) demander le nom du nouveau projet "newProjectName". Ce paramètre doit être défini. 
+2) demander le nom duchemin du répertoire dans lequel il doit être créé "ProjectPath". s'il n'est pas défini, il sera mis deux niveaux plus haut que le script et son chmein vérifié. S'il n'existe pas il sera demandé ä nouveau.
+
+3) créer le répertoire ProjectPath/newProjectName
+4) copier tout ce qui se trouve dans EmptyProject dans ce répertoire.
+5) compléter le script avec les commandes suivantes exécutées dans le répertoire principal "ProjectPath/newProjectName" en assumant que newproject = newProjectName.lower() 
+	a) supprimmer .git
+	b) remplacer 'emptyproject' par newproject dans .pylintrc global
+	c) remplacer 'emptyproject' par newproject dans pytest.ini global
+	d) remplacer 'EmpyProject' par le newProjectName dans config/config_project.yaml global
+	e) remplacer la valeur dela colonne en de la ligne pour laquelle key=APP_NAME de la feuille ResourceStrings par le newProjectName dans le fichier data\init_data\Basic_Data.xlsx
+	f) renommer le répertoire emptyproject avec lowercase du "newProjectName" choisi
+	g) exécuter la sequence
+		git init
+		git add .
+		git commit -m "Initial commit"
+		
+	h) executer pytest newproject
+		
+	i) exécuter	pylint newproject tests tools
+	
+===============================
+
+Le résultat avait deux petites erreurs due à des imprécisions dans la formulation initiale 
+
+===============================
+
+Nouvelle instruction à ChatGPT pour obtenir la documentation du code
+
+"Add a module docstring and method docstring"
+
+Ensuite:
+
+nettoyage à l'aide de powershell pyclean.ps1 
+
+ou depuis le répertoire tools
+
+python  remove_trailing_whitespaces.py setup_new_project.py
+python -m isort --overwrite-in-place setup_new_project.py
+python -m autopep8 --in-place --aggressive --aggressive  setup_new_project.py
+python -m pylint setup_new_project.py
+
+==============================
