@@ -254,10 +254,100 @@ Créer des données
 Copier le fichier generate_altered_data.py dans simpleproject
 ```python
 from generate_altered_data import generate_data_from_template
-...
-
-
 ```
+ajouter un chargeur et un lecteur de fichiers spécifique
+```python
+from lib.db_loader import DatabaseLoader
+from xl.xl_simple_reader import XlSimpleReader
+...
+def handle_load(this_db):
+    """
+    Handle the 'load' command, which loads data into the existing database.
+
+    Parameters:
+    - args: The command-line arguments.
+    - this_db: The database object to interact with.
+    """
+    
+    dbl = DatabaseLoader(this_db)
+    pattern = project.input_files_pattern.replace("{year}", r"\d{4}")
+
+    log.info(f"Loading data from project.input_dir: {project.input_dir}")
+    dbl.load_data_from_files(
+        XlSimpleReader,
+        tables=["Categories", "Sentences"],
+        path=project.input_dir,
+        pattern=pattern,
+        post_processing=this_db.update_sentences_category_fk,
+        recursive=True,
+    )
+...
+```
+Le fichier xl_simple_reader.py hérite les propriété de xl_reader. 
+Il lit les tables du fichier Simple_File.xlsx 
+
+```python
+from xl.xl_reader import XlReader
+
+class XlSimpleReader(XlReader):
+```
+Exemple d'import
+```python
+    def load_sentences(self):
+        """
+        Load and process data from the 'Sentences' sheet in the Excel file.
+
+        This method reads data from the 'Sentences' sheet, cleans up the DataFrame,
+        and converts it into a list of dictionaries for database insertion. The 'year' field
+        is extracted from the file name using the match object.
+
+        Returns:
+            list: A list of dictionaries representing the 'Sentences' data.
+        """
+        df = self.get_dataframe("Sentences")
+        df = self.cleanup_df(df)
+
+        data = []
+        try:
+            for _, row in df.iterrows():
+                new_entry = {
+                    "category_key": row["category_key"],
+                    "sentence": row["sentence"],
+                    "year": self.match.group(2),
+                }
+                data.append(new_entry)
+        except KeyError as e:
+            print(f"KeyError: {e} not found in the row")
+
+        return data
+ ```
+ Chargement des tables souhaitées à partir du fichier
+ xl_reader gère le chargement et la lecture du fichier Excel ainsi que l'appel de load_data pour chaque table
+ ```python
+    def load_data(self, table):
+        """
+        Load and process data from the specified sheet in the Excel file.
+
+        This method reads data from the specified table ('Categories' or 'Sentences'),
+        processes it, and prepares it for database insertion.
+
+        Args:
+            table (str): The name of the table/sheet to load ('Categories' or 'Sentences').
+
+        Returns:
+            list: A list of dictionaries, where each dictionary represents a row to be inserted
+            into the database.
+        """
+        if table == "Categories":
+            data_to_insert = self.load_categories()
+        elif table == "Sentences":
+            data_to_insert = self.load_sentences()
+        else:
+            data_to_insert = []
+
+        return data_to_insert        
+```
+
 ## 6.	Création d'export simples ##
 ## 7.	Extension du modèle de données pour créer des pivots ##
 ## 8.	Export de pivot explicite avec des graphiques ##
