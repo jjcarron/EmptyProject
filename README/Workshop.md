@@ -2,18 +2,18 @@
 # Workshop du 23.10.2024 #
 *A. Préparation*
 1. Installation de Python
-2. Création de l'environnment
+2. Creation de l'environnment
 ***
 *B. Utilisation du projet de référence*
-1.	Création d'un projet vide basé sur le modèle
+1.	Creation d'un projet vide basé sur le model
 2.	Adaptation de la configuration
-3.	Extension du modèle de données
+3.	Extension du model de data
 4.	Génération de la base de donnée
-5.	Création d'un module d'import spécifique
-6.	Création d'export simples
-7.	Extension du modèle de données pour créer des pivots
+5.	Creation d'un module d'Import spécifique
+6.	Creation d'Export simples
+7.	Extension du model de data pour créer des pivots
 8.	Export de pivot explicite avec des graphiques
-9.	Extension du modèle de données pour créer des pivots automatisés
+9.	Extension du model de data pour créer des pivots automatisés
 10.	Export de pivots automatisés avec des graphiques
 ***
 # A. Préparation #
@@ -21,7 +21,7 @@
     Portail clients SPT de l'OFIT (https://myaps.bit.admin.ch/web/user/software-kiosk/assigned) 
     GPL Python 3.11.2150.0	| Couche 3B	|Installation SCCM
 
-## 2. Création de l'environnment ##
+## 2. Creation de l'environnment ##
 dans un terminal Powershell (PS)
 1. Exécuter 
    ```ps
@@ -53,7 +53,7 @@ Hint: votre profile powershell a été adapté
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
    ```
 # B. Utilisation du projet de référence #
-## 1. Création d'un projet vide basé sur le modèle ##
+## 1. Creation d'un projet vide basé sur le model ##
 ### a. Adaptation de l'environnement powershell ###
    ```ps
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
@@ -129,7 +129,7 @@ Hint: votre profile powershell a été adapté
 │   │   │   __init__.py
 │   │
 │   ├───lib
-│   │   │   db_exporter.py
+│   │   │   db_Exporter.py
 │   │   │   db_loader.py
 │   │   │   logger.py
 │   │   │   pd_version_dependent_code_example.py
@@ -189,15 +189,15 @@ Hint: votre profile powershell a été adapté
     │       easy_definition.py
     │
     └───powershell
-            access_create_and_export.ps1
+            access_create_and_Export.ps1
             CheckAgainstRefs.ps1
             pyclean.ps1
-            sqlite_create_and_export.ps1
+            sqlite_create_and_Export.ps1
 ```
 
 ## 2.	Adaptation de la configuration ##
 Explication du contenu du fichier (à compléter)
-## 3.	Extension du modèle de données ##
+## 3.	Extension du model de data ##
 Fichier : Simple_File.xlsx
 contenu : deux tables
 `` Sentences (sentence, category_key, sequence_number,category_fk) ``
@@ -228,20 +228,20 @@ python .\simpleproject\simple_project.py create
 ou
 python .\simpleproject\simple_project.py create -db_type access
 ```
-Vérification de la base de données
+Vérification de la base de data
 Exécuter dans une fenêtre séparée
 ```PS
 sqlite_bro 
 ```
-puis ouvrir la base de données C:\Work\SimpleProject\data\db\Database.db
+puis ouvrir la base de data C:\Work\SimpleProject\data\db\Database.db
 ou 
 aller dans le répertoire  C:\Work\SimpleProject\data\db\
 et double-cliquer Database.accdb
-## 5.	Création d'un module d'import spécifique ##
+## 5.	Creation d'un module d'Import spécifique ##
 ### a. variante simple pour un fichier propre ###
 ajouter 
 ```PS
-import os
+Import os
 ....
 # dans case "create" ajouter
 dbl.load_all_sheets(
@@ -249,11 +249,11 @@ dbl.load_all_sheets(
 )
 ```
 Vérifier votre base de donnée
-### b. variante pour un import multiple avec un module d'import adapté ###
+### b. variante pour un Import multiple avec un module d'Import adapté ###
 ajouter un chargeur et un lecteur de fichiers spécifique
 ```python
-from lib.db_loader import DatabaseLoader
-from xl.xl_simple_reader import XlSimpleReader
+from lib.db_loader Import DatabaseLoader
+from xl.xl_simple_reader Import XlSimpleReader
 ...
 def handle_load(this_db):
     """
@@ -282,11 +282,11 @@ Le fichier xl_simple_reader.py hérite les propriété de xl_reader.
 Il lit les tables du fichier Simple_File.xlsx 
 
 ```python
-from xl.xl_reader import XlReader
+from xl.xl_reader Import XlReader
 
 class XlSimpleReader(XlReader):
 ```
-Exemple d'import
+Exemple d'Import
 ```python
     def load_sentences(self):
         """
@@ -342,14 +342,14 @@ Exemple d'import
 
         return data_to_insert        
 ```
-## 6.	Création d'export simples ##
-ajouter un exportateur de base
+## 6.	Creation d'Export simples ##
+ajouter un Exportateur de base
 ```python
-from lib.db_exporter import DatabaseExporter
+from lib.db_Exporter Import DatabaseExporter
 ...
-def handle_export(this_db):
+def handle_Export(this_db):
     """
-    Handle the 'export' command, which exports data from the database into Excel files.
+    Handle the 'Export' command, which Exports data from the database into Excel files.
 
     Parameters:
     - args: The command-line arguments.
@@ -357,11 +357,11 @@ def handle_export(this_db):
     """
     log.info("Exporting data...")
 
-    # Using DatabaseExporter to export data
-    db_exporter_test_file = os.path.join(
-        project.output_dir, "db_exporter_test.xlsx")
-    with DatabaseExporter(this_db, db_exporter_test_file) as dbe:
-        dbe.export_tables(["Categories", "Sentences"])
+    # Using DatabaseExporter to Export data
+    db_Exporter_test_file = os.path.join(
+        project.output_dir, "db_Exporter_test.xlsx")
+    with DatabaseExporter(this_db, db_Exporter_test_file) as dbe:
+        dbe.Export_tables(["Categories", "Sentences"])
 
         # Reformat one sheet
         sh = dbe.writer.get_sheet("Sentences")
@@ -370,21 +370,21 @@ def handle_export(this_db):
         sh.page_print_setting(portrait=False)
         sh.define_header_and_footer(title="My Sentences")
 ``` 
-utlisation d'un exportateur spécifique
+utlisation d'un Exportateur spécifique
 ```python
-from this_exporter import ThisExporter
+from this_Exporter Import ThisExporter
 ...
-from lib.db_exporter import DatabaseExporter
-    # Using ThisExporter for a customized export
-    customized_db_exporter_test_file = os.path.join(
-        project.output_dir, "customized_exporter_test.xlsx"
+from lib.db_Exporter Import DatabaseExporter
+    # Using ThisExporter for a customized Export
+    customized_db_Exporter_test_file = os.path.join(
+        project.output_dir, "customized_Exporter_test.xlsx"
     )
-    with ThisExporter(this_db, customized_db_exporter_test_file) as cdbe:
-        cdbe.export_all()
+    with ThisExporter(this_db, customized_db_Exporter_test_file) as cdbe:
+        cdbe.Export_all()
 ```
-## 7.	Extension du modèle de données pour créer des pivots ##
-### Définir dans le fichier de données basic_data.XLSX  ###
-une table de critères d'évaluation de ses données (Criteria)
+## 7.	Extension du model de data pour créer des pivots ##
+### Définir dans le fichier de data basic_data.XLSX  ###
+une table de critères d'évaluation de ses data (Criteria)
 
 | key  | definition           |
 |------|----------------------|
@@ -392,7 +392,7 @@ une table de critères d'évaluation de ses données (Criteria)
 | C_2  | Number of Letter_A    |
 | C_3  | Number of words       |
 
-les pivots souhaités (PivotInfos) pour l'export de pivots automatisés
+les pivots souhaités (PivotInfos) pour l'Export de pivots automatisés
 | query_name        | formula           | draw_rows | draw_total | draw_delta |
 |-------------------|-------------------|-----------|------------|------------|
 | number_of_letters | C_1               | VRAI      | VRAI       | VRAI       |
@@ -412,7 +412,7 @@ dans cet exemple,
 `number_of_letters` correspond au query_name 
 `_sheet_prefix` indique qu'il sera utilisé pour prfixé le nom de la feuille de sortie. celui-ci sera complété par `_data` ou `_chart`
 de même, `_title`, `_x_label` et `_y_label` spécifient le titre de la feuille et les labels à utiliser
-### Compléter le fichier de définition de la base de données (models.json) ### 
+### Compléter le fichier de définition de la base de data (models.json) ### 
 ```json
         "Criteria": {
             "id": { "type": "Integer", "primary_key": true },
@@ -442,7 +442,7 @@ de même, `_title`, `_x_label` et `_y_label` spécifient le titre de la feuille 
         }
 ```
 Mettre à jour le fichier `models.py`. avec l'outils `json_2_classes.py`
-### Créer un import explicite pour l'importation des critère dans la base de données ###
+### Créer un Import explicite pour l'Importation des critère dans la base de data ###
 exemple:
 ```python
    def load_data(self, tables):
@@ -501,7 +501,7 @@ exemple:
 ```
 ## 8.	Export de pivot explicite avec des graphiques ##
 ```python
-   def export_generated_pivots(self):
+   def Export_generated_pivots(self):
         """
         process formulas from pivot_information_df and create
         pivot tables
@@ -522,9 +522,9 @@ exemple:
         data_df.columns = data_df.columns.str.strip()
         self.writer.create_pivot_tables(data_df, pivot_information_df)
 ```
-## 9.	Extension du modèle de données pour créer des pivots automatisés ##
+## 9.	Extension du model de data pour créer des pivots automatisés ##
 ```python
-   def export_generated_pivots(self):
+   def Export_generated_pivots(self):
         """
         process formulas from pivot_information_df and create
         pivot tables
@@ -547,7 +547,7 @@ exemple:
 ```
 ## 10.	Export de pivots automatisés avec des graphiques  ##  
 ```Python 
-   def export_generated_pivots(self):
+   def Export_generated_pivots(self):
         """
         process formulas from pivot_information_df and create
         pivot tables
