@@ -1,60 +1,58 @@
 
-# Workshop du 23.10.2024 #
-*A. Préparation*
-1. Installation de Python
-2. Creation de l'environnment
+*A. Preparation
+1. Install Python
+2. Creating the environment
 ***
-*B. Utilisation du projet de référence*
-1.	Creation d'un projet vide basé sur le model
-2.	Adaptation de la configuration
-3.	Extension du model de data
-4.	Génération de la base de donnée
-5.	Creation d'un module d'Import spécifique
-6.	Creation d'Export simples
-7.	Extension du model de data pour créer des pivots
-8.	Export de pivot explicite avec des graphiques
-9.	Extension du model de data pour créer des pivots automatisés
-10.	Export de pivots automatisés avec des graphiques
+*B. Using the reference project
+1.	Create an empty project based on the model
+2.	Adapting the configuration
+3.	Extend data model
+4.	Database generation
+5.	Creation of a specific Import module
+6.	Creation of simple Exports
+7.	Extend data model to create pivots
+8.	Explicit pivot export with graphics
+9.	Data model extension to create automated pivots
+10.	Export of automated pivots with graphics
 ***
-# A. Préparation #
-## 1. Installation de Python ##
-    Portail clients SPT de l'OFIT (https://myaps.bit.admin.ch/web/user/software-kiosk/assigned) 
-    GPL Python 3.11.2150.0	| Couche 3B	|Installation SCCM
+# A. Preparation #
+## 1. install Python ##
+BIT SPT customer portal (https://myaps.bit.admin.ch/web/user/software-kiosk/assigned) 
+GPL Python 3.11.2150.0 | Layer 3B |Installation SCCM
 
-## 2. Creation de l'environnment ##
-dans un terminal Powershell (PS)
-1. Exécuter 
+## 2. Creation of environment ##
+in a Powershell (PS) terminal
+1. Run
    ```ps
    M:\Teams\Gremien\DB-Casinoaufsicht\ENVs\setup_python_env.ps1 -WorkDirectory "C:\my_venv_path"
    ```
 
-2. Tester venv 
+2. Test venv 
    ```ps
    PS C:\Users\Uxxxxxxxx> venv
    (myenv) PS C:\Users\U80750753>
    ```
-3. Travailler
-  ......
-4. Désactiver avec la commande
+3. Working
+......
+4. Deactivate venv with
    ```ps
    deactivate
    PS C:\Users\Uxxxxxxxx>
    ```
-
-Hint: votre profile powershell a été adapté
-1. le fichier`Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` a été créé ou modifié
+Hint: your powershell profile has been adapted
+1. the file `DocumentsWindowsPowerShell\Microsoft.PowerShell_profile.ps1` has been created or modified
    ```ps
    set-Alias venv c:\Work\myenv\scripts\activate.ps1
    function pytest { python -m pytest }
    function pip { python.exe -m pip }
    ```
-2. le fichier `\Documents\WindowsPowerShell\Microsoft.PowerShellISE_profile.ps1` a été créé ou modifié
+2. the file `WindowsPowerShellMicrosoft.PowerShellISE_profile.ps1` has been created or modified
    ```ps
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
    ```
-# B. Utilisation du projet de référence #
-## 1. Creation d'un projet vide basé sur le model ##
-### a. Adaptation de l'environnement powershell ###
+# B. Using the reference project ## 1.
+## 1. create an empty project based on the model ##
+### a. Adapting the powershell environment ###
    ```ps
    . "$env:HOMESHARE\data\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1"
    ```
@@ -69,10 +67,9 @@ Hint: votre profile powershell a été adapté
     Enter the project path (default: C:\Work): SimpleProject
     Creating new project 'SimpleProject' at C:\Work\SimpleProject...
 ```
-    Hint: Le git a été initialisé
-    
-### c. Examen des fichiers  ###
+Hint: The git has been initialized
 
+### c. File review ###
 ```PS
 (myenv) PS C:\Work\EmptyProject> cd ..\SimpleProject\
 (myenv) PS C:\Work\SimpleProject> tree -f
@@ -195,15 +192,15 @@ Hint: votre profile powershell a été adapté
             sqlite_create_and_Export.ps1
 ```
 
-## 2.	Adaptation de la configuration ##
-Explication du contenu du fichier (à compléter)
-## 3.	Extension du model de data ##
-Fichier : Simple_File.xlsx
-contenu : deux tables
-`` Sentences (sentence, category_key, sequence_number,category_fk) ``
+## 2.	Adapting the configuration ##
+Explanation of file contents (to be completed)
+## 3.	Data model extension ##
+File: Simple_File.xlsx
+contents: two tables
+Sentences (sentence, category_key, sequence_number,category_fk) ``
 `` Categories (key, category) ``
 
-Ajouter à db\models.json
+Add to db\models.json
 ```json
         "Sentences": {
             "id": { "type": "Integer", "primary_key": true },
@@ -218,28 +215,28 @@ Ajouter à db\models.json
             "category": { "type": "String" }
         },
 ```
-Exécuter:
+Run:
 ```PS
 python .\tools\json_2_classes.py .\simpleproject\db\models.json .\simpleproject\db\models.py
 ```
-## 4.	Génération de la base de donnée ##
+## 4. database generation ##
 ```PS
 python .\simpleproject\simple_project.py create
 ou
 python .\simpleproject\simple_project.py create -db_type access
 ```
-Vérification de la base de data
-Exécuter dans une fenêtre séparée
+Check database
+Run in a separate window
 ```PS
 sqlite_bro 
 ```
-puis ouvrir la base de data C:\Work\SimpleProject\data\db\Database.db
-ou 
-aller dans le répertoire  C:\Work\SimpleProject\data\db\
-et double-cliquer Database.accdb
-## 5.	Creation d'un module d'Import spécifique ##
-### a. variante simple pour un fichier propre ###
-ajouter 
+then open the database C:\Work\SimpleProject\datadb\Database.db
+or 
+go to the C:\Work\SimpleProject\datadb\ directory
+and double-click Database.accdb
+## 5.	Creating a specific Import module ##
+### a. simple variant for a clean file ###
+add  
 ```PS
 Import os
 ....
@@ -248,9 +245,9 @@ dbl.load_all_sheets(
     XlCleanReader, os.path.join(project.input_dir, "Simple_File.xlsx")
 )
 ```
-Vérifier votre base de donnée
-### b. variante pour un Import multiple avec un module d'Import adapté ###
-ajouter un chargeur et un lecteur de fichiers spécifique
+Check your database
+### b. variant for multiple Import with adapted Import module ###
+add a specific loader and file reader
 ```python
 from lib.db_loader Import DatabaseLoader
 from xl.xl_simple_reader Import XlSimpleReader
@@ -278,15 +275,15 @@ def handle_load(this_db):
     )
 ...
 ```
-Le fichier xl_simple_reader.py hérite les propriété de xl_reader. 
-Il lit les tables du fichier Simple_File.xlsx 
+The xl_simple_reader.py file inherits the properties of XlReader. 
+It reads tables from the file `Simple_File.xlsx`
 
 ```python
 from xl.xl_reader Import XlReader
 
 class XlSimpleReader(XlReader):
 ```
-Exemple d'Import
+Import example
 ```python
     def load_sentences(self):
         """
@@ -316,8 +313,8 @@ Exemple d'Import
 
         return data
  ```
- Chargement des tables souhaitées à partir du fichier
- xl_reader gère le chargement et la lecture du fichier Excel ainsi que l'appel de load_data pour chaque table
+Load desired tables from file
+XLRreader handles loading and reading the Excel file, as well as calling load_data for each table
  ```python
     def load_data(self, table):
         """
@@ -342,8 +339,8 @@ Exemple d'Import
 
         return data_to_insert        
 ```
-## 6.	Creation d'Export simples ##
-ajouter un Exportateur de base
+## 6.	Creating simple exports ##
+add a basic Exporter
 ```python
 from lib.db_Exporter Import DatabaseExporter
 ...
@@ -370,7 +367,7 @@ def handle_Export(this_db):
         sh.page_print_setting(portrait=False)
         sh.define_header_and_footer(title="My Sentences")
 ``` 
-utlisation d'un Exportateur spécifique
+use of a specific Exporter
 ```python
 from this_Exporter Import ThisExporter
 ...
@@ -382,9 +379,9 @@ from lib.db_Exporter Import DatabaseExporter
     with ThisExporter(this_db, customized_db_Exporter_test_file) as cdbe:
         cdbe.Export_all()
 ```
-## 7.	Extension du model de data pour créer des pivots ##
-### Définir dans le fichier de data basic_data.XLSX  ###
-une table de critères d'évaluation de ses data (Criteria)
+## 7.	Extending the data model to create pivots ##
+### Define in the data file basic_data.XLSX ###
+a table of data evaluation criteria (Criteria)
 
 | key  | definition           |
 |------|----------------------|
@@ -392,27 +389,31 @@ une table de critères d'évaluation de ses data (Criteria)
 | C_2  | Number of Letter_A    |
 | C_3  | Number of words       |
 
-les pivots souhaités (PivotInfos) pour l'Export de pivots automatisés
+desired pivots (PivotInfos) for automated pivot export
+
 | query_name        | formula           | draw_rows | draw_total | draw_delta |
 |-------------------|-------------------|-----------|------------|------------|
 | number_of_letters | C_1               | VRAI      | VRAI       | VRAI       |
 | number_of_words   | C_3               | VRAI      | VRAI       | FAUX       |
 | number_of_a       | C_2               | VRAI      | VRAI       | FAUX       |
 | aA_percentage     | C_2 / C_1 * 100   | VRAI      | FAUX       | FAUX       |
-La colonne formula permet de définir des formules mathématique simple sur les critères. (+, -, *, / ainsi que la notation des puissance de 10 sous la forme 1E4 pour 10'000) 
 
-dans ResourceStrings les resources nécessaires por afficher les labels de chaque pivots automatisé souhaité
+The formula column lets you define simple mathematical formulas for the criteria. (`+, -, *, /` as well as the notation of powers of 10 in the form 1E4 for 10'000) 
+
+in ResourceStrings, the resources required to display the labels of each desired automated pivot. 
+
 | key                             | en                | de              | fr              | it              |
 |----------------------------------|-------------------|-----------------|-----------------|-----------------|
 | number_of_letters_sheet_prefix   | NbLetters         | sheet_prefix_de | sheet_prefix_fr | sheet_prefix_it |
 | number_of_letters_title          | Number of letters | Title_de        | Title_fr        | Title_it        |
 | number_of_letters_x_label        | order             | x_label_de      | x_label_fr      | x_label_it      |
-| number_of_letters_y_label        | category          | y_label_de      | y_label_fr      | y_label_it      |
-dans cet exemple, 
-`number_of_letters` correspond au query_name 
-`_sheet_prefix` indique qu'il sera utilisé pour prfixé le nom de la feuille de sortie. celui-ci sera complété par `_data` ou `_chart`
-de même, `_title`, `_x_label` et `_y_label` spécifient le titre de la feuille et les labels à utiliser
-### Compléter le fichier de définition de la base de data (models.json) ### 
+| number_of_letters_y_label        | category          | y_label_de      | y_label_fr      | y_label_it      
+
+in this example, 
+number_of_letters` corresponds to the query_name 
+`_sheet_prefix` indicates that it will be used to prefix the name of the output sheet, which will be completed by `_data` or `_chart`.
+Similarly, `_title`, `_x_label` and `_y_label` specify the sheet title and labels to be used.
+### Completing the database definition file (models.json) ### 
 ```json
         "Criteria": {
             "id": { "type": "Integer", "primary_key": true },
@@ -441,9 +442,10 @@ de même, `_title`, `_x_label` et `_y_label` spécifient le titre de la feuille 
             "draw_delta": { "type": "Boolean" }
         }
 ```
-Mettre à jour le fichier `models.py`. avec l'outils `json_2_classes.py`
-### Créer un Import explicite pour l'Importation des critère dans la base de data ###
-exemple:
+Update the `models.py` file with the `json_2_classes.py` tool
+### Create an explicit Import for importing criteria into the database ###
+example:
+
 ```python
    def load_data(self, tables):
         """
@@ -499,7 +501,7 @@ exemple:
 
         return data
 ```
-## 8.	Export de pivot explicite avec des graphiques ##
+## 8.	Explicit pivot export with graphics ##
 ```python
    def Export_generated_pivots(self):
         """
@@ -522,7 +524,7 @@ exemple:
         data_df.columns = data_df.columns.str.strip()
         self.writer.create_pivot_tables(data_df, pivot_information_df)
 ```
-## 9.	Extension du model de data pour créer des pivots automatisés ##
+## 9.	Extend data model to create automated pivots ##
 ```python
    def Export_generated_pivots(self):
         """
@@ -545,7 +547,7 @@ exemple:
         data_df.columns = data_df.columns.str.strip()
         self.writer.create_pivot_tables(data_df, pivot_information_df)
 ```
-## 10.	Export de pivots automatisés avec des graphiques  ##  
+## 10.	Export automated pivots with graphics ##
 ```Python 
    def Export_generated_pivots(self):
         """
