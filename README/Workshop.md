@@ -546,6 +546,32 @@ exemple:
         self.writer.create_pivot_tables(data_df, pivot_information_df)
 ```
 ## 10.	Export de pivots automatisés avec des graphiques  ##  
-    
+```Python 
+   def export_generated_pivots(self):
+        """
+        process formulas from pivot_information_df and create
+        pivot tables
+
+        """
+        pivot_information_df = get_df_from_slqalchemy_objectlist(
+            self.database.get_all("PivotInfos")
+        )
+        self.writer.add_index_sheet(pivot_information_df)
+        data_df = get_df_from_slqalchemy_objectlist(
+            self.database.get_all("CriterionValues")
+        )
+
+        # check for duplicates
+        duplicated_rows = data_df[data_df.duplicated(
+            subset=["criterion_key", "dimension_1", "dimension_2"], keep=False)]
+        if not duplicated_rows.empty:
+            print("Duplicates found (displaying the first 20):")
+            print(duplicated_rows.head(20))
+            print(f"Total number of duplicates: {len(duplicated_rows)}")
+            raise ValueError("Duplicates exist in the data")
+
+        data_df.columns = data_df.columns.str.strip()
+        self.writer.create_pivot_tables(data_df, pivot_information_df)
+```
     
     
