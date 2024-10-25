@@ -392,7 +392,7 @@ une table de critères d'évaluation de ses données (Criteria)
 | C_2  | Number of Letter_A    |
 | C_3  | Number of words       |
 
-les pivots souhaités (PivotInfos)
+les pivots souhaités (PivotInfos) pour l'export de pivots automatisés
 | query_name        | formula           | draw_rows | draw_total | draw_delta |
 |-------------------|-------------------|-----------|------------|------------|
 | number_of_letters | C_1               | VRAI      | VRAI       | VRAI       |
@@ -400,6 +400,18 @@ les pivots souhaités (PivotInfos)
 | number_of_a       | C_2               | VRAI      | VRAI       | FAUX       |
 | aA_percentage     | C_2 / C_1 * 100   | VRAI      | FAUX       | FAUX       |
 La colonne formula permet de définir des formules mathématique simple sur les critères. (+, -, *, / ainsi que la notation des puissance de 10 sous la forme 1E4 pour 10'000) 
+
+dans ResourceStrings les resources nécessaires por afficher les labels de chaque pivots automatisé souhaité
+| key                             | en                | de              | fr              | it              |
+|----------------------------------|-------------------|-----------------|-----------------|-----------------|
+| number_of_letters_sheet_prefix   | NbLetters         | sheet_prefix_de | sheet_prefix_fr | sheet_prefix_it |
+| number_of_letters_title          | Number of letters | Title_de        | Title_fr        | Title_it        |
+| number_of_letters_x_label        | order             | x_label_de      | x_label_fr      | x_label_it      |
+| number_of_letters_y_label        | category          | y_label_de      | y_label_fr      | y_label_it      |
+dans cet exemple, 
+`number_of_letters` correspond au query_name 
+`_sheet_prefix` indique qu'il sera utilisé pour prfixé le nom de la feuille de sortie. celui-ci sera complété par `_data` ou `_chart`
+de même, `_title`, `_x_label` et `_y_label` spécifient le titre de la feuille et les labels à utiliser
 ### Compléter le fichier de définition de la base de données (models.json) ### 
 ```json
         "Criteria": {
@@ -511,6 +523,28 @@ exemple:
         self.writer.create_pivot_tables(data_df, pivot_information_df)
 ```
 ## 9.	Extension du modèle de données pour créer des pivots automatisés ##
+```python
+   def export_generated_pivots(self):
+        """
+        process formulas from pivot_information_df and create
+        pivot tables
+
+        """
+        pivot_information_df = get_df_from_slqalchemy_objectlist(
+            self.database.get_all("PivotInfos")
+        )
+        self.writer.add_index_sheet(pivot_information_df)
+        data_df = get_df_from_slqalchemy_objectlist(
+            self.database.get_all("CriterionValues")
+        )
+
+        # check for duplicates
+        duplicated_rows = data_df[data_df.duplicated(
+            subset=["criterion_key", "dimension_1", "dimension_2"], keep=False)]
+        # dimension_1 = columns, dimension_2 = rows
+        data_df.columns = data_df.columns.str.strip()
+        self.writer.create_pivot_tables(data_df, pivot_information_df)
+```
 ## 10.	Export de pivots automatisés avec des graphiques  ##  
     
     
