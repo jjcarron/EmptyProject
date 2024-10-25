@@ -1,6 +1,5 @@
-Instructions à ChatGPT pour la création d'un script:
-====================================================
-
+## ChatGPT instructions for creating a script: ##
+```PS
 EMPTYPROJECT
 │   .gitignore
 │   .pylintrc
@@ -94,53 +93,39 @@ EMPTYPROJECT
             CheckAgainstRefs.ps1
             pyclean.ps1
             sqlite_create_and_export.ps1
+```
 
+The directory structure above represents a project template called EmptyProject. It will be used to create new projects. 
 
-La structure de répertoire ci-dessus représente un modèle de projet nommé EmptyProject. Il sera utilisé pour créer de nouveaux projets. 
+Give me a python script that will be placed in the project's tools subdirectory. 
 
-Donne-moi un script python qui sera pacé dans le sous répertoire tools du projet. 
+Features:
+1) request the name of the new project “newProjectName”. This parameter must be defined. 
+2) request the path name of the directory in which it is to be created `ProjectPath`. If not defined, it will be set two levels higher than the script and its path checked. If it does not exist, it will be requested again.
 
-Fonctionnalités:
-1) demander le nom du nouveau projet "newProjectName". Ce paramètre doit être défini. 
-2) demander le nom duchemin du répertoire dans lequel il doit être créé "ProjectPath". s'il n'est pas défini, il sera mis deux niveaux plus haut que le script et son chmein vérifié. S'il n'existe pas il sera demandé ä nouveau.
+3) create the `ProjectPath/newProjectName` directory
+4) copy everything in EmptyProject into this directory.
+5) complete the script with the following commands executed in the main  `ProjectPath/newProjectName` directory, assuming that newproject = newProjectName.lower() 
+a) delete .git
+b) replace 'emptyproject' with newproject in `.pylintrc` global
+c) Replace 'empty_project' with new_project in `tests/test_empty_project.py`
+d) replace 'emptyproject' with newproject in `pytest.ini` global
+e) replace 'EmpyProject' with newProjectName in `config/config_project.yaml` global
+f) replace the value of the column in the row for which key=APP_NAME in the ResourceStrings sheet with the newProjectName in the file `data\init_data\Basic_Data.xlsx`
+g) Rename the main file to newproject (lowercase)
+h) rename the emptyproject directory with lowercase of the chosen newProjectName
 
-3) créer le répertoire ProjectPath/newProjectName
-4) copier tout ce qui se trouve dans EmptyProject dans ce répertoire.
-5) compléter le script avec les commandes suivantes exécutées dans le répertoire principal "ProjectPath/newProjectName" en assumant que newproject = newProjectName.lower() 
-	a) supprimmer .git
-	b) remplacer 'emptyproject' par newproject dans .pylintrc global
-	c) remplacer 'emptyproject' par newproject dans pytest.ini global
-	d) remplacer 'EmpyProject' par le newProjectName dans config/config_project.yaml global
-	e) remplacer la valeur dela colonne en de la ligne pour laquelle key=APP_NAME de la feuille ResourceStrings par le newProjectName dans le fichier data\init_data\Basic_Data.xlsx
-	f) renommer le répertoire emptyproject avec lowercase du "newProjectName" choisi
-	g) exécuter la sequence
-		git init
-		git add .
-		git commit -m "Initial commit"
-		
-	h) executer pytest newproject
-		
-	i) exécuter	pylint newproject tests tools
-	
-===============================
+i) Initialize a new Git repository with: 
+```PS
+git init
+git add .
+git commit -m "Initial commit"
+```
+j) Remove the .pytest_cache directory if it exists
+ 
+k) run python -m pylint pytest newproject
 
-Le résultat avait deux petites erreurs due à des imprécisions dans la formulation initiale 
+l) run python -m pylint pylint newproject tests tools
 
-===============================
+m) add a module docstring and method docstring 
 
-Nouvelle instruction à ChatGPT pour obtenir la documentation du code
-
-"Add a module docstring and method docstring"
-
-Ensuite:
-
-nettoyage à l'aide de powershell pyclean.ps1 
-
-ou depuis le répertoire tools
-
-python  remove_trailing_whitespaces.py setup_new_project.py
-python -m isort --overwrite-in-place setup_new_project.py
-python -m autopep8 --in-place --aggressive --aggressive  setup_new_project.py
-python -m pylint setup_new_project.py
-
-==============================
