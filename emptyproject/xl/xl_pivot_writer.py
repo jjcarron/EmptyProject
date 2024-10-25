@@ -99,7 +99,8 @@ class XlPivotWriter(XlWriter):
                 columns="columns",
                 values="value",
             )
-            pivot_table = pivot_table.reindex(columns=all_columns, fill_value=0)
+            pivot_table = pivot_table.reindex(
+                columns=all_columns, fill_value=0)
             criterion_pivots[criterion] = pivot_table
         return criterion_pivots, criteria
 
@@ -128,10 +129,11 @@ class XlPivotWriter(XlWriter):
             query_name = row["query_name"]
             language = project.context.language
             data_sheet_name = (
-                project.get_resource_string(f"{query_name}_sheet_prefix", language)
-                + "_data"
-            )
-            result_df = self.process_formula(criterion_pivots, criteria, formula)
+                project.get_resource_string(
+                    f"{query_name}_sheet_prefix",
+                    language) + "_data")
+            result_df = self.process_formula(
+                criterion_pivots, criteria, formula)
             sh = XlSheetWriter(self.writer, data_sheet_name, result_df)
 
             self.finalize_data_sheet(sh, row)
@@ -212,7 +214,8 @@ class XlPivotWriter(XlWriter):
         Returns:
             float: The evaluated result of the formula, or NaN if an error occurs.
         """
-        tokens = re.findall(r"[\d.]+(?:[eE][+-]?\d+)?|[+\-*/()]|[\w.]+", formula)
+        tokens = re.findall(
+            r"[\d.]+(?:[eE][+-]?\d+)?|[+\-*/()]|[\w.]+", formula)
         for i, token in enumerate(tokens):
             if re.match(r"^\d", token):
                 tokens[i] = token.replace(",", ".")
@@ -282,7 +285,9 @@ class XlPivotWriter(XlWriter):
         sheet_base_name = row["query_name"]
         sh.finalize_sheet(
             portrait=False,
-            title=project.this_db.get_resource_string(f"{sheet_base_name}_title", "en"),
+            title=project.this_db.get_resource_string(
+                f"{sheet_base_name}_title",
+                "en"),
         )
 
     def add_delta_row(self, ws):

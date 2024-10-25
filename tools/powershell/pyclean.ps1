@@ -1,8 +1,6 @@
-﻿c:
-venv
-Set-Alias python python.exe
-Set-Location \Work\SimpleProject\
-$to_check_dir = Join-Path -Path (Get-Location) -ChildPath "simpleproject"
+﻿Set-Alias python python.exe
+Set-Location \Work\EmptyProject\
+$to_check_dir = Join-Path -Path (Get-Location) -ChildPath "emptyproject"
  
 python  tools\remove_trailing_whitespaces.py $to_check_dir -r
 python -m isort --overwrite-in-place $to_check_dir 

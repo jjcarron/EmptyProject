@@ -1,6 +1,6 @@
 project:
   properties:
-    name: "Empty Project"
+    name: "S1mple Project"
     description: "As starter for new application"
     date: 30.09.2023
     version: 0.1.0
@@ -38,7 +38,8 @@ project:
     #regular expressions to retrieve information from the directory structure
     # \{year\} permet de definir l'année dans le programme
     #\{operation\}  permet de definir le type OL | LB dans le programme as example
-    input_files_pattern: '^(\w+.+)[ -_]FO[ -_]MyForm[ -_]\{operation\}-\{year\}\.xlsx$'
+    #input_files_pattern: '\w+.+[ -_]FO[ -_]MyForm[ -_]\{operation\}-\{year\}\.xlsx$'
+    input_files_pattern: '(\w+.+)[ -_]File[ -_]({year})\.xlsx$'
 
   connections:
     #Database connection information
