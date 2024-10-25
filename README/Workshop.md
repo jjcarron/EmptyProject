@@ -250,11 +250,6 @@ dbl.load_all_sheets(
 ```
 Vérifier votre base de donnée
 ### b. variante pour un import multiple avec un module d'import adapté ###
-Créer des données
-Copier le fichier generate_altered_data.py dans simpleproject
-```python
-from generate_altered_data import generate_data_from_template
-```
 ajouter un chargeur et un lecteur de fichiers spécifique
 ```python
 from lib.db_loader import DatabaseLoader
@@ -347,8 +342,45 @@ Exemple d'import
 
         return data_to_insert        
 ```
-
 ## 6.	Création d'export simples ##
+ajouter un exportateur de base
+```python
+from lib.db_exporter import DatabaseExporter
+...
+def handle_export(this_db):
+    """
+    Handle the 'export' command, which exports data from the database into Excel files.
+
+    Parameters:
+    - args: The command-line arguments.
+    - this_db: The database object to interact with.
+    """
+    log.info("Exporting data...")
+
+    # Using DatabaseExporter to export data
+    db_exporter_test_file = os.path.join(
+        project.output_dir, "db_exporter_test.xlsx")
+    with DatabaseExporter(this_db, db_exporter_test_file) as dbe:
+        dbe.export_tables(["Categories", "Sentences"])
+
+        # Reformat one sheet
+        sh = dbe.writer.get_sheet("Sentences")
+        sh.format_worksheet()
+        sh.adjust_column_width()
+        sh.page_print_setting(portrait=False)
+        sh.define_header_and_footer(title="My Sentences")
+``` 
+utlisation d'un exportateur spécifique
+```python
+from lib.db_exporter import DatabaseExporter
+    # Using ThisExporter for a customized export
+    customized_db_exporter_test_file = os.path.join(
+        project.output_dir, "customized_exporter_test.xlsx"
+    )
+    with ThisExporter(this_db, customized_db_exporter_test_file) as cdbe:
+        cdbe.export_all()
+```
+        
 ## 7.	Extension du modèle de données pour créer des pivots ##
 ## 8.	Export de pivot explicite avec des graphiques ##
 ## 9.	Extension du modèle de données pour créer des pivots automatisés ##
