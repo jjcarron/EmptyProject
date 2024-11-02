@@ -91,7 +91,7 @@ def test_process_formula(
         sample_data)
 
     # Process the formula for the first query
-    formula = "data_2 + data_1"
+    formula = "data_2 + 4 + 4 * 5 * data_1"
     result_df = xl_pivot_writer_instance.process_formula(
         criterion_pivots, criteria, formula)
 

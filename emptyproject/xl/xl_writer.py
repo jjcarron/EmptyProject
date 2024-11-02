@@ -277,6 +277,14 @@ class XlChartWriter(XlSheetWriter):
             Defaults to 0.
         """
         last_row = self.data_sheet.ws.max_row - hidden_rows
+        # Créez une référence pour les années (colonnes de la première ligne après le nom)
+        x_labels = Reference(
+            self.data_sheet.ws,
+            min_col=2,
+            max_col=self.data_sheet.ws.max_column,
+            min_row=1
+        )
+
         for row in range(2, last_row + 1):
             values = Reference(
                 self.data_sheet.ws,
@@ -285,11 +293,12 @@ class XlChartWriter(XlSheetWriter):
                 max_row=row,
                 max_col=self.data_sheet.ws.max_column,
             )
-            series = Series(
-                values, title=self.data_sheet.ws.cell(
-                    row, 1).value)
+            series = Series(values, title=self.data_sheet.ws.cell(row, 1).value)
             self.chart.series.append(series)
             series.smooth = False
+
+        # Associez les années comme étiquettes pour l'axe X
+        self.chart.set_categories(x_labels)
 
     def create_chart(self):
         """
@@ -400,5 +409,15 @@ class XlWriter:
         """
         Save the Excel file to the specified path.
         """
-        self.writer.close()
-        log.info("%s successfully created.", self.xl_file)
+        try:
+            if not self.writer.book.sheetnames:
+                raise ValueError("No sheets found in the workbook.")
+            self.writer.close()
+            log.info("%s successfully created.", self.xl_file)
+        except ValueError as e:
+            log.error("Error: %s", e)
+        except (IOError, OSError) as e:
+            log.error("File error while saving: %s", e)
+        # pylint: disable = broad-exception-caught
+        except Exception as e:
+            log.error("An unexpected error occurred: %s", e)

@@ -28,18 +28,20 @@ class XlPivotChartWriter(XlChartWriter):
     """
 
     def __init__(self, writer, data_work_sheet, chart_sheet_name, labels):
-        self.draw_rows = None
-        self.draw_total = None
-        self.draw_delta = None
+        self.show_rows = None
+        self.show_total = None
+        self.show_delta = None
+        self.show_init = None
         super().__init__(writer, data_work_sheet, chart_sheet_name, labels)
 
     def add_chart_data(self, hidden_rows=0):
-        hidden_rows = int(self.draw_total) + int(self.draw_delta)
+        hidden_rows = int(self.show_total) + \
+            int(self.show_delta) + int(self.show_init)
         last_row = self.data_sheet.ws.max_row
-        if self.draw_rows:
+        if self.show_rows:
             super().add_chart_data(hidden_rows)
 
-        if self.draw_total:
+        if self.show_total:
             total_row = last_row + 1 - hidden_rows
             values = Reference(
                 self.data_sheet.ws,
@@ -52,7 +54,7 @@ class XlPivotChartWriter(XlChartWriter):
             self.chart.series.append(series)
             series.smooth = False
 
-        if self.draw_delta:
+        if self.show_delta:
             delta_row = last_row + 1 - hidden_rows + 1
             values = Reference(
                 self.data_sheet.ws,
@@ -130,10 +132,14 @@ class XlPivotWriter(XlWriter):
             language = project.context.language
             data_sheet_name = (
                 project.get_resource_string(
-                    f"{query_name}_sheet_prefix",
-                    language) + "_data")
+                    f"{query_name}_Sheet_Prefix",
+                    language) + "_Data")
             result_df = self.process_formula(
                 criterion_pivots, criteria, formula)
+            # suppress empty columns
+            result_df = result_df.loc[:, ~(
+                (result_df.iloc[1:].replace(0, float('NaN')).isnull()).all())]
+            result_df = result_df.reset_index()
             sh = XlSheetWriter(self.writer, data_sheet_name, result_df)
 
             self.finalize_data_sheet(sh, row)
@@ -171,35 +177,22 @@ class XlPivotWriter(XlWriter):
         """
         result_data = []
         for index in pivot_tables[criteria[0]].index:
-            result_row = {"Name": index}
+            result_row = {"name": index}
             for column in pivot_tables[criteria[0]].columns:
                 result = self.eval_formula(
-                    pivot_tables, formula, index, column
-                )
+                    pivot_tables, formula, index, column)
                 if not pd.isna(result):
                     result_row[column] = result
             result_data.append(result_row)
 
-        result_df = pd.DataFrame(result_data).set_index("Name")
+        result_df = pd.DataFrame(result_data).set_index("name")
         result_df = result_df.dropna(axis=1, how="all")
         result_df = result_df.loc[:, (result_df != 0).any(axis=0)]
         result_df = result_df.loc[:, ~result_df.isna().all(axis=0)]
         result_df = result_df.reindex(
             sorted(result_df.columns, key=self.sort_key), axis=1
         )
-        df_trimmed = result_df.apply(
-            lambda row: pd.Series(row.dropna().tolist()), axis=1
-        )
-        df_trimmed.fillna(np.nan, inplace=True)
-        df_trimmed.columns = [
-            f"S_{str(i+1).zfill(2)}" for i in range(df_trimmed.shape[1])
-        ]
-        df_trimmed.index = [
-            project.this_db.get_resource_string(title, "en")
-            for title in df_trimmed.index
-        ]
-        df_trimmed = df_trimmed.reset_index()
-        return df_trimmed
+        return result_df
 
     def eval_formula(self, pivot_tables, formula, index, column):
         """
@@ -226,9 +219,7 @@ class XlPivotWriter(XlWriter):
                     and column in pivot_tables[criterion].columns
                     and index in pivot_tables[criterion].index
                 ):
-                    value = pivot_tables[criterion].at[
-                        index, column
-                    ]
+                    value = pivot_tables[criterion].at[index, column]
                     if pd.isna(value):
                         return np.nan
                     tokens[i] = str(value) if value is not None else "0"
@@ -254,16 +245,22 @@ class XlPivotWriter(XlWriter):
         sheet_name = "Index"
         columns_to_drop = [
             "id",
-            "x_name",
-            "y_name",
-            "draw_rows",
-            "draw_total",
-            "draw_delta",
+            "show_rows",
+            "show_total",
+            "show_delta",
+            "show_init"
         ]
         df = pivot_infos_df.drop(columns=columns_to_drop)
+
+        # add missing columns from the ResourceStrings
+        df["sheet_prefix"] = df["query_name"].apply(project.get_sheet_prefix)
+        df["title"] = df["query_name"].apply(project.get_sheet_title)
+
+        # reorder the columns
         desired_order = ["title", "sheet_prefix", "formula", "query_name"]
         df = df[desired_order]
-        df = df.sort_values(by="title", ascending=False)
+
+        df = df.sort_values(by="title", ascending=True)
         sh = XlSheetWriter(self.writer, sheet_name, df)
         sh.finalize_sheet(portrait=False, title="Index")
         return sh
@@ -276,17 +273,21 @@ class XlPivotWriter(XlWriter):
             sh (XlSheetWriter): The sheet writer object.
             row (Series): The row containing the specifications for the sheet.
         """
-        if row["draw_total"]:
+
+        if not row["show_init"]:
+            self.remove_init_row(sh.ws)
+
+        if row["show_total"]:
             self.add_total_row(sh.ws)
 
-        if row["draw_delta"]:
+        if row["show_delta"]:
             self.add_delta_row(sh.ws)
 
         sheet_base_name = row["query_name"]
         sh.finalize_sheet(
             portrait=False,
             title=project.this_db.get_resource_string(
-                f"{sheet_base_name}_title",
+                f"{sheet_base_name}_Title",
                 "en"),
         )
 
@@ -307,6 +308,17 @@ class XlPivotWriter(XlWriter):
             prev_col_letter = openpyxl.utils.get_column_letter(col - 1)
             delta_formula = f"={col_letter}{last_row}-{prev_col_letter}{last_row}"
             ws.cell(row=last_row + 1, column=col, value=delta_formula)
+
+    def remove_init_row(self, ws):
+        """
+        Adds a row to the sheet that calculates the total for each column.
+
+        Args:
+            ws (Worksheet): The worksheet object.
+        """
+        last_row = ws.max_row
+        if ws.cell(row=last_row, column=1).value == "zz_Init":
+            ws.delete_rows(last_row)
 
     def add_total_row(self, ws):
         """
@@ -340,19 +352,20 @@ class XlPivotWriter(XlWriter):
         language = project.context.language
 
         chart_sheet_name = (
-            project.get_resource_string(f"{query_name}_sheet_prefix", language)
-            + "_chart"
+            project.get_resource_string(f"{query_name}_Sheet_Prefix", language)
+            + "_Chart"
         )
 
         labels = ChartLabels(
-            title=project.get_resource_string(f"{query_name}_title", language),
-            x_label=project.get_resource_string(f"{query_name}_x_label", language),
-            y_label=project.get_resource_string(f"{query_name}_y_label", language),
+            title=project.get_resource_string(f"{query_name}_Title", language),
+            x_label=project.get_resource_string(f"{query_name}_X_Label", language),
+            y_label=project.get_resource_string(f"{query_name}_Y_Label", language),
         )
 
         sh = self.add_chart_sheet(data_sheet, chart_sheet_name, labels)
-        sh.draw_rows = row["draw_rows"]
-        sh.draw_total = row["draw_total"]
-        sh.draw_delta = row["draw_delta"]
+        sh.show_rows = row["show_rows"]
+        sh.show_total = row["show_total"]
+        sh.show_delta = row["show_delta"]
+        sh.show_init = row["show_delta"]
         sh.create_chart()
         return sh

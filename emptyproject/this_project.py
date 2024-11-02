@@ -44,11 +44,20 @@ Methods:
 
 import os
 import sys
+from dataclasses import dataclass
 
 import pypyodbc
 from lib.logger import user_logger as log
 from lib.project import Project
 
+@dataclass
+class Context:
+    """store contextual information used from several modules"""
+
+    language: str
+    operation: str
+    database_type: str
+    debug: bool
 
 class ThisProject(Project):
     """
