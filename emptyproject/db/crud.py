@@ -54,38 +54,73 @@ class CRUDRepository(Generic[T]):
                 return True
         return False
 
-    def check_constraints(self, db: Session, new_entry: T) -> bool:
+    # def check_constraints(self, db: Session, new_entry: T) -> bool:
+        # """
+        # Checks if the new entry violates any constraints.
+
+        # Args:
+        # db (Session): The SQLAlchemy session.
+        # new_entry (T): The new entry to be checked.
+
+        # Returns:
+        # bool: True if the entry does not violate any constraints, False otherwise.
+        # """
+
+        # # Check for unique constraints
+        # if self.has_unique_constraint():
+        # # Filter the attributes to only include those that are columns in
+        # # the model
+        # model_columns = {
+        # column.name for column in inspect(
+        # self.model).columns}
+        # entry_dict = {
+        # k: v for k,
+        # v in new_entry.__dict__.items() if k in model_columns}
+
+        # existing_entry = db.query(
+        # self.model).filter_by(
+        # **entry_dict).first()
+        # if existing_entry:
+        # # The entry already exists in the database.
+        # print("checked exist")
+        # return False
+
+        # # Add other constraint checks here
+        # print("checked no entry found")
+        # return True
+
+    def check_constraints(self, db: Session, new_entry: Any) -> bool:
         """
-        Checks if the new entry violates any constraints.
+        Checks if the new entry violates any unique constraints for the model.
 
         Args:
             db (Session): The SQLAlchemy session.
-            new_entry (T): The new entry to be checked.
+            new_entry (Any): The new entry to be checked.
 
         Returns:
             bool: True if the entry does not violate any constraints, False otherwise.
         """
+        # Use SQLAlchemy inspection to get columns with unique constraints
+        unique_constraints = [
+            column.name for column in inspect(
+                self.model).columns if column.unique]
 
-        # Check for unique constraints
-        if self.has_unique_constraint():
-            # Filter the attributes to only include those that are columns in
-            # the model
-            model_columns = {
-                column.name for column in inspect(
-                    self.model).columns}
-            entry_dict = {
-                k: v for k,
-                v in new_entry.__dict__.items() if k in model_columns}
+        # Create a filter dynamically for each unique constraint
+        for field in unique_constraints:
+            field_value = getattr(new_entry, field, None)
+            if field_value is not None:
+                # Check if any existing entry violates the unique constraint
+                existing_entry = db.query(
+                    self.model).filter(
+                    getattr(
+                        self.model,
+                        field) == field_value).first()
+                if existing_entry:
+                    # If an entry with this unique field already exists,
+                    # constraint is violated
+                    return False
 
-            existing_entry = db.query(
-                self.model).filter_by(
-                **entry_dict).first()
-            if existing_entry:
-                # The entry already exists in the database.
-                return False
-
-        # Add other constraint checks here
-
+        # If no constraints are violated
         return True
 
     @classmethod
@@ -103,6 +138,7 @@ class CRUDRepository(Generic[T]):
         db.add(obj_in)
         db.flush()
         db.refresh(obj_in)
+
         return obj_in
 
     @classmethod

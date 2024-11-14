@@ -199,6 +199,42 @@ class CoreDB(Database):
         finally:
             db.close()
 
+    def update_resource_strings(self, entry: ResourceStrings):
+        """
+        Met à jour ou crée des enregistrements dans ResourceStrings pour une langue spécifique.
+
+        Args:
+            db (Session): La session SQLAlchemy.
+            model (Type[ResourceStrings]): Le modèle ResourceStrings.
+            language (str): La langue à mettre à jour (ex: 'en', 'fr', 'de', 'it').
+            data (Dict[str, str]): Les paires 'key: value' pour cette langue.
+        """
+        db: Session = self.get_session()
+        try:
+            row = db.query(ResourceStrings).filter(
+                ResourceStrings.key == entry.key).first()
+
+            if row:
+                # Met à jour uniquement les langues qui ont une valeur non
+                # nulle dans `entry`
+                for language in ['en', 'fr', 'de', 'it']:
+                    value = getattr(entry, language, None)
+                    if value is not None:
+                        setattr(row, language, value)
+            else:
+                # Crée un nouvel enregistrement si la clé n'existe pas encore
+                db.add(entry)
+
+            db.commit()  # Commit pour enregistrer toutes les modifications
+
+        except Exception as e:
+            db.rollback()
+            log.error(
+                "An error occurred while updating the resource string: %s", e)
+
+        finally:
+            db.close()
+
     def get_all(self, table):
         """
         Retrieves all the element of a table from the database.

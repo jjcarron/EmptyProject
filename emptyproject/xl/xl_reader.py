@@ -76,24 +76,40 @@ class XlReader:
         except Exception as e:
             dlog.info("Error reading Excel file %s: %s", self.file_path, e)
 
-    def get_dataframe(self, sheet_name):
+    def get_dataframe(self, sheet_name, first_row=1, first_col=1):
         """
-        Retrieves the DataFrame for a specific sheet name.
+        Retrieves the DataFrame for a specific sheet name with an offset.
 
         Args:
             sheet_name (str): The name of the sheet to retrieve.
+            first_row (int, optional): The first row (1-based) to start the DataFrame from.
+            Defaults to 1.
+            first_col (int, optional): The first column (1-based) to start the DataFrame from.
+            Defaults to 1.
 
         Returns:
-            pandas.DataFrame: The DataFrame corresponding to the specified sheet name.
+            pandas.DataFrame: The DataFrame corresponding to the specified sheet name with the
+            specified offset.
 
         Raises:
             ValueError: If the sheet name does not exist in the Excel file.
+            IndexError: If first_row or first_col result in invalid indexing.
         """
-        if sheet_name in self.df_dict:
-            return self.df_dict[sheet_name]
+        if sheet_name not in self.df_dict:
+            raise ValueError(
+                f"No sheet named '{sheet_name}' found in the Excel file.")
 
-        raise ValueError(
-            f"No sheet named '{sheet_name}' found in the Excel file.")
+        df = self.df_dict[sheet_name]
+
+        # Convert 1-based indices to 0-based and validate
+        row_offset = first_row - 1 if first_row > 0 else 0
+        col_offset = first_col - 1 if first_col > 0 else 0
+
+        # Ensure offsets are within the bounds of the DataFrame
+        if row_offset >= len(df) or col_offset >= len(df.columns):
+            raise IndexError("Row or column offset is out of bounds.")
+
+        return df.iloc[row_offset:, col_offset:]
 
     def find_row_with_ref(self, df, ref):
         """

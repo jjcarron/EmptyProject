@@ -277,7 +277,8 @@ class XlChartWriter(XlSheetWriter):
             Defaults to 0.
         """
         last_row = self.data_sheet.ws.max_row - hidden_rows
-        # Créez une référence pour les années (colonnes de la première ligne après le nom)
+        # Créez une référence pour les années (colonnes de la première ligne
+        # après le nom)
         x_labels = Reference(
             self.data_sheet.ws,
             min_col=2,
@@ -293,7 +294,9 @@ class XlChartWriter(XlSheetWriter):
                 max_row=row,
                 max_col=self.data_sheet.ws.max_column,
             )
-            series = Series(values, title=self.data_sheet.ws.cell(row, 1).value)
+            series = Series(
+                values, title=self.data_sheet.ws.cell(
+                    row, 1).value)
             self.chart.series.append(series)
             series.smooth = False
 

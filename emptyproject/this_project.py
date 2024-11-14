@@ -50,6 +50,7 @@ import pypyodbc
 from lib.logger import user_logger as log
 from lib.project import Project
 
+
 @dataclass
 class Context:
     """store contextual information used from several modules"""
@@ -58,6 +59,7 @@ class Context:
     operation: str
     database_type: str
     debug: bool
+
 
 class ThisProject(Project):
     """
@@ -97,6 +99,8 @@ class ThisProject(Project):
 
         # patterns
         self.input_files_pattern = self.get_pattern('input_files_pattern')
+        self.template_files_pattern = self.get_pattern(
+            'template_files_pattern')
 
         # Connection information
         self.access_conn_str = self.get_connection('access_conn_str')
